@@ -42,7 +42,7 @@ class Puzzle: #could be Board
         for i in range(self.size):
             for j in range(self.size):
                 self.state[i][j] = i * self.size + j + 1
-        self.state[self.blankPos[0]][self.blankPos[1]] = 0
+        self.state[-1][-1] = 0
         
     def shuffle(self): 
         n = self.size * self.size
@@ -133,10 +133,12 @@ class Puzzle: #could be Board
         return True
    
     def ifWon(self): 
-        index = 0
+        index = 1
         for i in range(self.size):
             for j in range(self.size):
-                if self.state[i][j] != index:
+                if index == 16: 
+                    if self.state[i][j] == 0: return True
+                elif self.state[i][j] != index:
                     return False
                 index += 1
         return True

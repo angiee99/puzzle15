@@ -1,4 +1,6 @@
 from random import randint
+from random import choice
+from copy import deepcopy
 
 class Puzzle: #could be Board
     '''
@@ -26,7 +28,12 @@ class Puzzle: #could be Board
         if solved: 
             self.get_solved_state()
         else: 
-            self.shuffle()
+            self.get_solved_state()
+            # self.state[3][2], self.state[3][3] = self.state[3][3], self.state[3][2]
+            # self.blankPos = (3, 2)  
+            # self.shuffle()
+            self.shuffleMoves()
+
 
     def __str__(self): 
         string = ''
@@ -43,7 +50,14 @@ class Puzzle: #could be Board
             for j in range(self.size):
                 self.state[i][j] = i * self.size + j + 1
         self.state[-1][-1] = 0
-        
+    
+    def shuffleMoves(self):
+        nShuffles = 130
+
+        for i in range(nShuffles):
+            dir = choice(self.DIRECTIONS)
+            self.move(dir)
+
     def shuffle(self): 
         n = self.size * self.size
         # print(n)
@@ -117,9 +131,10 @@ class Puzzle: #could be Board
                 i = 2
                 j = 3
             self.state[0][i], self.state[0][j] =self.state[0][j], self.state[0][i]
-        
     
     def move(self, dir): 
+        # if dir not in DIRECTIONS 
+        #  throw sth (for now could return False yep)
         newBlankPos = (self.blankPos[0] + dir[0], self.blankPos[1] + dir[1])
 
         if newBlankPos[0] < 0 or newBlankPos[0] >= self.size \
@@ -142,9 +157,23 @@ class Puzzle: #could be Board
                     return False
                 index += 1
         return True
-    
+
+    def tryMove(self, dir):
+        simPuzzle = deepcopy(self)
+
+        return simPuzzle.move(dir), simPuzzle
+
+
+      
     def heuristic(self):
-        pass
+        h = 0  
+        for i in range (self.size): 
+            for j in range (self.size):
+                if self.state[i][j] != 0:
+                    x1 = (self.state[i][j] - 1) // self.size
+                    y1 = (self.state[i][j] - 1) % self.size
+                    h += abs(x1 - i) + abs(y1 - j)
+        return h
 
 
    

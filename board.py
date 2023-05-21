@@ -9,8 +9,6 @@ class Puzzle: #could be Board
     self.size   (mb also static) nah  
     self.state  = self.board
     self.blankPos
-    
- 
     '''
     # moves
     UP = (1, 0)
@@ -29,9 +27,9 @@ class Puzzle: #could be Board
             self.get_solved_state()
         else: 
             self.get_solved_state()
-            # self.state[3][2], self.state[3][3] = self.state[3][3], self.state[3][2]
+            # 1 self.state[3][2], self.state[3][3] = self.state[3][3], self.state[3][2]
             # self.blankPos = (3, 2)  
-            # self.shuffle()
+            # 2 self.shuffle()
             self.shuffleMoves()
 
 
@@ -52,7 +50,7 @@ class Puzzle: #could be Board
         self.state[-1][-1] = 0
     
     def shuffleMoves(self):
-        nShuffles = 130
+        nShuffles = 170
 
         for i in range(nShuffles):
             dir = choice(self.DIRECTIONS)

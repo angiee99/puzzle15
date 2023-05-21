@@ -1,9 +1,12 @@
 from board import Puzzle
+from puzzleList import PuzzleList
 from time import perf_counter_ns
+
 
 INF = 100000
 NANO_TO_SEC = 1000000000
 
+puzzleList = PuzzleList() # хз чи треба глобальна але побачим 
 def IDAstar(puzzle=Puzzle): 
     '''
     if puzzle is alreade won - return void list, 
@@ -16,6 +19,7 @@ def IDAstar(puzzle=Puzzle):
     ''' bound is like the conut of levels we're looking at, but more flexible'''
     bound = hScore(puzzle) # hScore could be the method of Puzzle class
     print(bound)
+    bound+= 10
     path = [puzzle]
     dirs = []
     while True: 
@@ -70,18 +74,7 @@ def search(path, gScore, bound, dirs):
               
 
 def hScore(puzzle):
-    h = 0  
-    for i in range (puzzle.size): 
-        for j in range (puzzle.size):
-            if puzzle[i][j] != 0:
-                x1 = (puzzle[i][j] - 1) // puzzle.size
-                y1 = (puzzle[i][j] - 1) % puzzle.size
-
-                # OR destPos = ((puzzle[i][j] - 1) // puzzle.boardSize,
-                                #(puzzle[i][j] - 1) % puzzle.boardSize)
-                # x1 = goal.state.index(puzzle[i][j])
-                # y1 = goal.state[i].index(puzzle[i][j])
-                h += abs(x1 - i) + abs(y1 - j)
+    h = puzzleList.getHScore(puzzle)
     return h
             
 

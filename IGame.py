@@ -132,7 +132,7 @@ class Game:
         
         
     def _moveTiles(self, dir):
-        #  cant it be self.board.move(dir)
+        #  cant it be self.board.move(dir) if dir in DIRECRCTIONS
         if dir == self.board.RIGHT:
             self.board.move(self.board.RIGHT)
         elif dir ==  self.board.LEFT:

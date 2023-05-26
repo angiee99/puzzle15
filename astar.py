@@ -7,7 +7,7 @@ INF = 100000
 NANO_TO_SEC = 1000000000
 
 puzzleList = PuzzleList() # хз чи треба глобальна але побачим 
-def IDAstar(puzzle=Puzzle): 
+def IDAstar(puzzle): 
     '''
     if puzzle is alreade won - return void list, 
     else returns list of directions to execute 
@@ -18,8 +18,8 @@ def IDAstar(puzzle=Puzzle):
     t1 =  perf_counter_ns()
     ''' bound is like the conut of levels we're looking at, but more flexible'''
     bound = hScore(puzzle) # hScore could be the method of Puzzle class
-    print(bound)
-    bound+= 10
+    # print(bound)
+    # bound+= 10
     path = [puzzle]
     dirs = []
     while True: 
@@ -51,10 +51,11 @@ def search(path, gScore, bound, dirs):
 
     for dir in node.DIRECTIONS: 
         #
-        if dirs and (-dir[0], -dir[1]) == dirs[-1]: #????? not sure how
+        if dirs and (-dir[0], -dir[1]) == dirs[-1]: # (alloqs not to check the input state)
+                                                    #????? not sure how
             continue
 
-        tryDir, tryPuzzle = node.tryMove(dir) # simulateMove
+        tryDir, tryPuzzle = node.tryMoveWithCopy(dir) # simulateMove
         
         if not tryDir or tryPuzzle in path: # could be just written in another way 
             continue

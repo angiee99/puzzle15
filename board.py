@@ -18,27 +18,37 @@ class Puzzle: #could be Board
 
     DIRECTIONS = [UP, DOWN, LEFT, RIGHT]
 
-
-    def __init__(self, solved = False, size = 4): #could be shuffle = True
-        self.size = size
-        self.state = [[0]*self.size for _ in range(self.size)]
-        self.blankPos = (self.size -1, self.size -1)
-        if solved: 
+    def __init__(self, solved=False, other=None, size=4):
+        if other is None:
+            # Create a new puzzle from scratch
+            self.size = size
+            self.state = [[0] * self.size for _ in range(self.size)]
+            self.blankPos = (self.size - 1, self.size - 1)
             self.get_solved_state()
-        else: 
-            self.get_solved_state()
-            # 1 self.state[3][2], self.state[3][3] = self.state[3][3], self.state[3][2]
-            # self.blankPos = (3, 2)  
-            # 2 self.shuffle()
-            self.shuffleMoves()
+            if not solved: self.shuffleMoves()
+        else:
+            # Create a copy of the puzzle based on another puzzle object
+            self.size = other.size
+            self.state = [row[:] for row in other.state]
+            self.blankPos = other.blankPos
 
 
-    def __str__(self): 
-        string = ''
-        for i in range(self.size):
-            string += str(self.state[i])
-            string += "\n"
-        return string
+    # def __init__(self, solved = False, size = 4): #could be shuffle = True
+    #     self.size = size
+    #     self.state = [[0]*self.size for _ in range(self.size)]
+    #     self.blankPos = (self.size -1, self.size -1)
+    #     if solved: 
+    #         self.get_solved_state()
+    #     else: 
+    #         self.get_solved_state()
+    #         # 1 self.state[3][2], self.state[3][3] = self.state[3][3], self.state[3][2]
+    #         # self.blankPos = (3, 2)  
+    #         # self.shuffle()
+    #         self.shuffleMoves()
+
+
+    def __str__(self):
+        return '\n'.join(map(str, self.state))
     
     def __getitem__(self, key): 
         return self.state[key]
@@ -48,14 +58,16 @@ class Puzzle: #could be Board
             for j in range(self.size):
                 self.state[i][j] = i * self.size + j + 1
         self.state[-1][-1] = 0
-    
-    def shuffleMoves(self):
-        nShuffles = 170
 
-        for i in range(nShuffles):
+# shufflesCount impacts performance
+    def shuffleMoves(self):
+        shufflesCount = 140
+
+        for i in range(shufflesCount):
             dir = choice(self.DIRECTIONS)
             self.move(dir)
 
+# no control over shuffle number yet
     def shuffle(self): 
         n = self.size * self.size
         # print(n)
@@ -65,9 +77,9 @@ class Puzzle: #could be Board
         arr[-1] = 0
         # print(arr)
         # Fisher-Yatse
-        # Start from the last element and swap one by one. We don't
-        # need to run for the first element that's why i > 0
-        for i in range(n-1,0,-1):
+            # Start from the last element and swap one by one. We don't
+            # need to run for the first element that's why i > 0
+        for i in range(n-1,(n-1)//2,-1):
             # Pick a random index from 0 to i
             j = randint(0,i)
             arr[i],arr[j] = arr[j],arr[i]
@@ -104,7 +116,6 @@ class Puzzle: #could be Board
     def isSolvable(self):
         # Count inversions in given puzzle
         invCount = self.getInvCount()
-        # print(invCount)
     
         # If grid is odd (not my case but better leave it ), return true if inversion
         # count is even.
@@ -115,10 +126,10 @@ class Puzzle: #could be Board
             pos = self.blankPos[0] + 1
             # print(pos)
             # print(pos & 1) # ??? this notation 
-            if (pos & 1):
-                solvable =  (invCount & 1)
+            if (pos & 1): #odd 
+                solvable =  (invCount & 1) # yes if invCount is odd
             else:
-                solvable =  ~(invCount & 1)
+                solvable =  ~(invCount & 1) # yes if invCount is even (will turn to 1)
 
         # if solvable: print("Solvable")
         # else: print("Not solvable")
@@ -156,12 +167,20 @@ class Puzzle: #could be Board
                 index += 1
         return True
 
+#question about deepcopy efficience
     def tryMove(self, dir):
         simPuzzle = deepcopy(self)
 
         return simPuzzle.move(dir), simPuzzle
 
+# probably not working
+    def tryMoveWithCopy(self, dir):
+        simPuzzle = Puzzle(other=self)  # Create a copy of the current puzzle
 
+        if simPuzzle.move(dir):
+            return True, simPuzzle
+        else:
+            return False, None
       
     def heuristic(self):
         h = 0  

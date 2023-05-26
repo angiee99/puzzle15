@@ -89,7 +89,7 @@ class Game:
                     self.board.shuffle()
                 elif event.key == pygame.K_s:
                     self.board.get_solved_state()
-                elif event.key == pygame.K_h:
+                elif event.key == pygame.K_a:
                     self.dirs = IDAstar(self.board)
                     print(self.dirs)
                 elif event.key == pygame.K_m:

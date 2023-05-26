@@ -61,7 +61,7 @@ class Puzzle: #could be Board
 
 # shufflesCount impacts performance
     def shuffleMoves(self):
-        shufflesCount = 140
+        shufflesCount = 150
 
         for i in range(shufflesCount):
             dir = choice(self.DIRECTIONS)
@@ -70,12 +70,11 @@ class Puzzle: #could be Board
 # no control over shuffle number yet
     def shuffle(self): 
         n = self.size * self.size
-        # print(n)
         arr = [0]*n
         for i in range(n): 
             arr[i] = i+1 
         arr[-1] = 0
-        # print(arr)
+
         # Fisher-Yatse
             # Start from the last element and swap one by one. We don't
             # need to run for the first element that's why i > 0

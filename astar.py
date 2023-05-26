@@ -17,9 +17,7 @@ def IDAstar(puzzle):
     
     t1 =  perf_counter_ns()
     ''' bound is like the conut of levels we're looking at, but more flexible'''
-    bound = hScore(puzzle) # hScore could be the method of Puzzle class
-    # print(bound)
-    # bound+= 10
+    bound = hScore(puzzle) # hScore could be the method of PuzzleList class
     path = [puzzle]
     dirs = []
     while True: 

@@ -1,4 +1,5 @@
 from board import Puzzle
+from collections import OrderedDict
 ''' list of states of Puzzle
 each value in dictionary 
     hash-value: hScore 
@@ -6,18 +7,23 @@ allows to store hScore of each state of puzzle
 and extract it instead of counting again
 '''
 class PuzzleList: 
-    def __init__(self):
-        self.records = {}
+    def __init__(self, cache_size = 1000):
+        # self.records = {}
+        self.records = OrderedDict()
+        self.cache_size = cache_size
     
-    def insert(self, node=Puzzle):
-        key = self.murmurhash2(str(node))
-        if key not in self.records:
-            self.records[key] = node.heuristic()
+    def insert(self, node, key):
+        # key = self.murmurhash2(str(node))
+        # if key not in self.records:
+        self.records[key] = node.heuristic()
 
-    def getHScore(self, node=Puzzle):
+
+    def getHScore(self, node):
         key = self.murmurhash2(str(node))
         if key not in self.records:
-            self.insert(node)
+            self.insert(node, key)
+            if len(self.records) > self.cache_size:
+                self.records.popitem(last=False)  # Remove the least recently accessed item
         return self.records[key]
 
         

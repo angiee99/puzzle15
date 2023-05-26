@@ -141,7 +141,8 @@ class Puzzle: #could be Board
             self.state[0][i], self.state[0][j] =self.state[0][j], self.state[0][i]
     
     def move(self, dir): 
-        # if dir not in DIRECTIONS 
+        if dir not in self.DIRECTIONS:
+            return False
         #  throw sth (for now could return False yep)
         newBlankPos = (self.blankPos[0] + dir[0], self.blankPos[1] + dir[1])
 

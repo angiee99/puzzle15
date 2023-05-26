@@ -11,6 +11,7 @@ class PuzzleList:
         # self.records = {}
         self.records = OrderedDict()
         self.cache_size = cache_size
+        self.c = 0
     
     def insert(self, node, key):
         # key = self.murmurhash2(str(node))
@@ -21,9 +22,11 @@ class PuzzleList:
     def getHScore(self, node):
         key = self.murmurhash2(str(node))
         if key not in self.records:
-            self.insert(node, key)
-            if len(self.records) > self.cache_size:
-                self.records.popitem(last=False)  # Remove the least recently accessed item
+            self.insert(node, key)  
+            if len(self.records) / self.cache_size > 0.85:
+                self.c += 1
+                self.records.popitem(last=False)
+            # Remove the least recently accessed item
         return self.records[key]
 
         

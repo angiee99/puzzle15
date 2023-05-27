@@ -21,6 +21,7 @@ class Game:
         self.board = PuzzleStar(size=GAME_SIZE)
         self.active = True
         self.start_time = 0 
+        self.bestScore = INF
         self.buttons = self.createButtons() 
         while True:
             if self.active:             
@@ -41,7 +42,7 @@ class Game:
             self.clock.tick(FPS)
    
     def createButtons(self):
-        self.btReshuffle = Button("Reshuffle", (505, 120), BLACK, GREEN, "Shuffleddd")
+        self.btReshuffle = Button("Reshuffle", (505, 120), BLACK, GREEN)
         self.btAutosolve = Button("Autosolve", (505, 220), YELLOW, DARKGREEN, "Click&Move")
         self.btSave = Button("Save game", (505, 320), BLACK, GREEN)
         
@@ -112,6 +113,8 @@ class Game:
     def checkIfWon(self):
         if(self.board.ifWon() and self.clock.get_time() > 1): 
                     self.winTime = self._getCurrentTime()
+                    if(self.winTime < self.bestScore):
+                        self.bestScore = self.winTime 
                     self.active = False
     
     def drawWinScreen(self):
@@ -174,6 +177,10 @@ class Game:
         else: 
             score_surf = test_font.render(f'score: {self.winTime}', 1, OLIVE)
             score_rect = score_surf.get_rect(center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2 + 50))
+            best_score_surf = test_font.render(f'Best score: {self.bestScore}', 1, OLIVE)
+            best_score_rect = score_surf.get_rect(center = (SCREEN_WIDTH//2 - 40, SCREEN_HEIGHT//2 + 100))
+            self.screen.blit(best_score_surf, best_score_rect)
+
         self.screen.blit(score_surf, score_rect)
 
     def _moveTiles(self, dir):

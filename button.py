@@ -6,6 +6,7 @@ class Button(pygame.sprite.Sprite):
         super().__init__()
         self.pos = pos
         self.text = text
+        self.initText = text
         self.text_color = text_color
         self.bg_color = bg_color
         self.feedback = feedback
@@ -50,9 +51,10 @@ class Button(pygame.sprite.Sprite):
             self.clickedState = False
         else:  #only if self.clickeState == 1
             self.text = self.feedback
-            # self.text_surf = buttonFont.render(
-            #         self.feedback, True, self.text_color).convert_alpha()
             self.clickedState = 2
+            self.image.blit(self.text_surf, self.text_pos)
+        if self.feedback != "" and self.clickedState != 2: 
+            self.text = self.initText 
             self.image.blit(self.text_surf, self.text_pos)
     
     def hovered(self):

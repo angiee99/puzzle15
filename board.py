@@ -44,6 +44,7 @@ class Puzzle: #could be Board
             for j in range(self.size):
                 self.state[i][j] = i * self.size + j + 1
         self.state[-1][-1] = 0
+        self.blankPos = (self.size - 1, self.size - 1)
 
 # shufflesCount impacts performance
     def shuffleMoves(self):

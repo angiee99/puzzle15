@@ -6,7 +6,9 @@ each value in dictionary
 allows to store hScore of each state of puzzle 
 and extract it instead of counting again
 '''
-class PuzzleList: 
+
+#STATE LIST  is better naming 
+class StateList: 
     def __init__(self, cache_size = 1000):
         # self.records = {}
         self.records = OrderedDict()

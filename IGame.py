@@ -1,7 +1,8 @@
 # import pygame
 from gameSettings import *
 from board import Puzzle
-from astar import IDAstar
+# from astar import IDAstar
+from puzzleStar import *
 
 pygame.init()
 tileFont = pygame.font.SysFont('Viga', 72)
@@ -16,7 +17,7 @@ class Game:
 
     def play(self): 
         self.clock = pygame.time.Clock()
-        self.board = Puzzle(size=GAME_SIZE)
+        self.board = PuzzleStar(size=GAME_SIZE)
         self.active = True
         self.start_time = 0 
         self.buttons = self.createButtons() 
@@ -53,17 +54,17 @@ class Game:
         # btSprites.update()
         
     def checkButtons(self, pos=None): 
-        for sprite in self.buttons:
-            sprite.showButton()
-            sprite.hovered()
+        for button in self.buttons:
+            button.showButton()
+            button.hovered()
             if pos is not None: # bt was clicked 
-                if  sprite.rect.collidepoint(pos):
-                    sprite.clicked()
-                    if sprite == self.btReshuffle:
+                if  button.rect.collidepoint(pos):
+                    button.clicked()
+                    if button == self.btReshuffle:
                         self.board.shuffleMoves()
-                    elif sprite == self.btAutosolve: 
-                        self.dirs = IDAstar(self.board)
-                    sprite.missionCompleted()    
+                    elif button == self.btAutosolve: 
+                        self.dirs = self.board.IDAstar()
+                    button.missionCompleted()    
             
             # sprite.clicked()
         self.buttons.draw(self.screen)
@@ -118,7 +119,7 @@ class Game:
                 elif event.key == pygame.K_s:
                     self.board.get_solved_state()
                 elif event.key == pygame.K_a:
-                    self.dirs = IDAstar(self.board)
+                    self.dirs = self.board.IDAstar()
                     print(self.dirs)
                 elif event.key == pygame.K_m:
                     if self.dirs:

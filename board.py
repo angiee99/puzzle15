@@ -33,20 +33,6 @@ class Puzzle: #could be Board
             self.blankPos = other.blankPos
 
 
-    # def __init__(self, solved = False, size = 4): #could be shuffle = True
-    #     self.size = size
-    #     self.state = [[0]*self.size for _ in range(self.size)]
-    #     self.blankPos = (self.size -1, self.size -1)
-    #     if solved: 
-    #         self.get_solved_state()
-    #     else: 
-    #         self.get_solved_state()
-    #         # 1 self.state[3][2], self.state[3][3] = self.state[3][3], self.state[3][2]
-    #         # self.blankPos = (3, 2)  
-    #         # self.shuffle()
-    #         self.shuffleMoves()
-
-
     def __str__(self):
         return '\n'.join(map(str, self.state))
     
@@ -167,30 +153,10 @@ class Puzzle: #could be Board
                 index += 1
         return True
 
-#question about deepcopy efficience
-    def tryMove(self, dir):
-        simPuzzle = deepcopy(self)
 
-        return simPuzzle.move(dir), simPuzzle
 
-# probably not working
-    def tryMoveWithCopy(self, dir):
-        simPuzzle = Puzzle(other=self)  # Create a copy of the current puzzle
 
-        if simPuzzle.move(dir):
-            return True, simPuzzle
-        else:
-            return False, None
-      
-    def heuristic(self):
-        h = 0  
-        for i in range (self.size): 
-            for j in range (self.size):
-                if self.state[i][j] != 0:
-                    x1 = (self.state[i][j] - 1) // self.size
-                    y1 = (self.state[i][j] - 1) % self.size
-                    h += abs(x1 - i) + abs(y1 - j)
-        return h
+  
 
 
    

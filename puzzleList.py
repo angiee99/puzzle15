@@ -14,22 +14,24 @@ class PuzzleList:
         self.c = 0
     
     def insert(self, node, key):
-        # key = self.murmurhash2(str(node))
-        # if key not in self.records:
         self.records[key] = node.heuristic()
 
 
     def getHScore(self, node):
-        key = self.murmurhash2(str(node))
+        key = hash(str(node))
         if key not in self.records:
             self.insert(node, key)  
             if len(self.records) / self.cache_size > 0.85:
                 self.c += 1
                 self.records.popitem(last=False)
             # Remove the least recently accessed item
+        else:
+            self._move_to_end(key)
         return self.records[key]
 
-        
+    def _move_to_end(self, key):
+        self.records.move_to_end(key)
+
     def murmurhash2(self, key, seed=0):
         # multimplication, rotation, XOR
         # Constants for the MurmurHash2 algorithm

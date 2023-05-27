@@ -1,6 +1,6 @@
 from board import Puzzle
 from puzzleList import PuzzleList
-from time import perf_counter_ns
+from time import perf_counter_ns, sleep, time
 
 
 INF = 100000
@@ -18,6 +18,7 @@ def IDAstar(puzzle):
     t1 =  perf_counter_ns()
     ''' bound is like the conut of levels we're looking at, but more flexible'''
     bound = hScore(puzzle) # hScore could be the method of PuzzleList class
+    print(bound)
     path = [puzzle]
     dirs = []
     while True: 
@@ -26,12 +27,14 @@ def IDAstar(puzzle):
         if rem == True: #? 
             tDelta = (perf_counter_ns()-t1)/NANO_TO_SEC
             print("Took {} seconds to find a solution of {} moves".format(tDelta, len(dirs)))
+            puzzleList.records.clear()
+            sleep(0.1)
             return dirs
         elif rem == INF:
             return None
         
         bound = rem
-
+    
 ''' recursion '''   
 #potenctial for creating a node class for storing its hScore,
 #  or mb sth like a Node list with hash values for each Node (mb even python set)      

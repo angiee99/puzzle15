@@ -39,7 +39,6 @@ class Button(pygame.sprite.Sprite):
 
     #прапорець wasClicked  = ін проусес
     def clicked(self):
-        print("clicked")
         if self.clickedState == 1: self.clickedState += 1
         elif self.clickedState == 2:  self.clickedState = 2
         else: self.clickedState = 1

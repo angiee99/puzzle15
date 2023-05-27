@@ -48,7 +48,8 @@ class Puzzle: #could be Board
 
 # shufflesCount impacts performance
     def shuffleMoves(self):
-        shufflesCount = 128
+        self.get_solved_state()
+        shufflesCount = 200
 
         for i in range(shufflesCount):
             dir = choice(self.DIRECTIONS)

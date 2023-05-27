@@ -64,14 +64,12 @@ class Game:
                     button.clicked()
                     if button == self.btReshuffle:
                         self.board.shuffleMoves()
-                        self.btAutosolve.clickedState = False
+                        self.btAutosolve.text = self.btAutosolve.initText
                     
                     elif button == self.btAutosolve and  button.clickedState == 1: 
                         self.dirs = self.board.IDAstar()
-                        print(button.clickedState)
-
+            
                     elif button == self.btAutosolve and self.dirs:
-                        print("self.btAutosolve and button.clickedState == 2")
                         
                         d = self.dirs.pop(0)
                         self._moveTiles(d)
@@ -79,9 +77,7 @@ class Game:
                         button.missionCompleted() 
                         if not self.dirs: button.clickedState = False  
 
-                    print(button.clickedState)
                     button.missionCompleted()
-                    print(button.clickedState)
             
         self.buttons.draw(self.screen)
 

@@ -9,7 +9,7 @@ and extract it instead of counting again
 
 #STATE LIST  is better naming 
 class StateList: 
-    def __init__(self, cache_size = 1000):
+    def __init__(self, cache_size = 4000):
         # self.records = {}
         self.records = OrderedDict()
         self.cache_size = cache_size
@@ -28,12 +28,9 @@ class StateList:
                 self.records.popitem(last=False)
             # Remove the least recently accessed item
         else:
-            self._move_to_end(key)
+             self.records.move_to_end(key)
         return self.records[key]
-
-    def _move_to_end(self, key):
-        self.records.move_to_end(key)
-
+       
     def murmurhash2(self, key, seed=0):
         # multimplication, rotation, XOR
         # Constants for the MurmurHash2 algorithm

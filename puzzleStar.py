@@ -30,9 +30,9 @@ class PuzzleStar(Puzzle):
             if rem == True: #? 
                 tDelta = (perf_counter_ns()-t1)/NANO_TO_SEC
                 print("Took {} seconds to find a solution of {} moves".format(tDelta, len(dirs)))
-                self.puzzleList.records.clear()
                 
-                sleep(0.1)
+                self.puzzleList.records.clear()
+                sleep(0.3)
 
                 return dirs
             elif rem == INF:

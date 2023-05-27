@@ -1,13 +1,14 @@
-# import pygame
+
 from gameSettings import *
 from board import Puzzle
-# from astar import IDAstar
 from puzzleStar import *
 
+
 pygame.init()
+from button import Button
 tileFont = pygame.font.SysFont('Viga', 72)
 scoreFont = pygame.font.SysFont('Viga', 36)
-buttonFont = pygame.font.SysFont('Viga', 36)
+# buttonFont = pygame.font.SysFont('Viga', 36)
 
 class Game: 
     def __init__(self): 
@@ -40,9 +41,9 @@ class Game:
             self.clock.tick(FPS)
    
     def createButtons(self):
-        self.btReshuffle = Button("Reshuffle", (510, 120), BLACK, BLUE, "Shuffleddd")
-        self.btAutosolve = Button("Autosolve", (505, 220), BLACK, BLUE, "Click&Move")
-        self.btSave = Button("Save game", (505, 320), BLACK, BLUE)
+        self.btReshuffle = Button("Reshuffle", (505, 120), BLACK, GREEN, "Shuffleddd")
+        self.btAutosolve = Button("Autosolve", (505, 220), YELLOW, DARKGREEN, "Click&Move")
+        self.btSave = Button("Save game", (505, 320), BLACK, GREEN)
         
         btSprites = pygame.sprite.Group()
         
@@ -62,15 +63,29 @@ class Game:
                     button.clicked()
                     if button == self.btReshuffle:
                         self.board.shuffleMoves()
-                    elif button == self.btAutosolve: 
+                        self.btAutosolve.clickedState = False
+                    
+                    elif button == self.btAutosolve and  button.clickedState == 1: 
                         self.dirs = self.board.IDAstar()
-                    button.missionCompleted()    
+                        print(button.clickedState)
+
+                    elif button == self.btAutosolve and self.dirs:
+                        print("self.btAutosolve and button.clickedState == 2")
+                        
+                        d = self.dirs.pop(0)
+                        self._moveTiles(d)
+
+                        button.missionCompleted() 
+                        if not self.dirs: button.clickedState = False  
+
+                    print(button.clickedState)
+                    button.missionCompleted()
+                    print(button.clickedState)
             
-            # sprite.clicked()
         self.buttons.draw(self.screen)
 
     def drawBoard(self):
-        self.screen.fill(OLIVE)
+        self.screen.fill(YELLOW)
 
         for i in range(self.board.size):
             for j in range(self.board.size):
@@ -82,17 +97,17 @@ class Game:
                     numberText = ''
 #?
                 rect = pygame.Rect(j*BOARD_WIDTH/self.board.size,
-                                    i*BOARD_HEIGHT/self.board.size + 5, # + 5 adds space, but numbers are not centered 
+                                    i*BOARD_HEIGHT/self.board.size + 10, # + 5 adds space, but numbers are not centered 
                                     BOARD_WIDTH/self.board.size,
                                     BOARD_HEIGHT/self.board.size)
 #?
                 pygame.draw.rect(self.screen, currentTileColor, rect)
-                pygame.draw.rect(self.screen, OLIVE, rect, 1) #draws lines
+                pygame.draw.rect(self.screen, GREEN, rect, 1) #draws lines
 #?
                 fontImg = tileFont.render(numberText, 1, YELLOW)
                 self.screen.blit(fontImg,
                             (j*BOARD_WIDTH/self.board.size+ (BOARD_WIDTH/self.board.size - fontImg.get_width())/2,
-                            i*BOARD_HEIGHT/self.board.size + (BOARD_HEIGHT/self.board.size - fontImg.get_height())/2))
+                            i*BOARD_HEIGHT/self.board.size + 10 + (BOARD_HEIGHT/self.board.size - fontImg.get_height())/2))
     
     def checkIfWon(self):
         if(self.board.ifWon() and self.clock.get_time() > 1): 
@@ -153,7 +168,7 @@ class Game:
     def display_score(self): 
         test_font = pygame.font.Font(None, 50)
         if self.active:
-            score_surf = scoreFont.render(f'score: {self._getCurrentTime()}', 1, DARKGREEN)
+            score_surf = scoreFont.render(f'score: {self._getCurrentTime()}', 1, BLUE)
             score_rect = score_surf.get_rect(bottomleft = (510, 50))
 
         else: 
@@ -165,64 +180,7 @@ class Game:
         self.board.move(dir)
 
 
-class Button(pygame.sprite.Sprite):
-    def __init__(self, text, pos, text_color=BLACK, bg_color=None, feedback=""):
-        super().__init__()
-        self.pos = pos
-        self.text = text
-        self.text_color = text_color
-        self.bg_color = bg_color
-        self.feedback = feedback
 
-        self.clickedState = None
-        # self.showButton()
-
-    def showButton(self):
-        self.text_surf = buttonFont.render(self.text, True, self.text_color).convert_alpha()
-        text_size = self.text_surf.get_size()
-
-        button_width  = text_size[0]
-        button_height = text_size[1]
-        if self.bg_color is not None:
-            button_width  *= 2
-            button_height *= 2
-
-        self.image = pygame.Surface((button_width, button_height))
-        self.rect = self.image.get_rect()
-          
-        if self.bg_color is None:
-            self.image.fill(OLIVE)
-        else:
-            self.image.fill(self.bg_color)
-            
-            # text_pos is the center of surface        
-        self.text_pos = self.text_surf.get_rect(center = self.rect.center) 
-        self.image.blit(self.text_surf, self.text_pos)
-        self.rect.topleft = self.pos 
-
-    #прапорець wasClicked  = ін проусес
-    def clicked(self):
-        print("clicked")
-        self.clickedState = 1
-        self.image.fill(YELLOW)
-   
-    #змінить прапорець wasClicked на реді 
-    def missionCompleted(self):
-        if self.feedback == "": 
-            self.clickedState = False
-        else: 
-            self.text = self.feedback
-            # self.text_surf = buttonFont.render(
-            #         self.feedback, True, self.text_color).convert_alpha()
-            self.clickedState = 2
-            self.image.blit(self.text_surf, self.text_pos)
-    
-    def hovered(self):
-        hover = self.rect.collidepoint(pygame.mouse.get_pos())
-        if hover and not self.clickedState:
-            self.image.fill(PINK)
-            self.image.blit(self.text_surf, self.text_pos)
-        # else:  self.image.fill(YELLOW)
     
 
             

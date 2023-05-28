@@ -1,6 +1,5 @@
 
 from gameSettings import *
-from board import Puzzle
 from puzzleStar import *
 from fileModule import *
 
@@ -23,7 +22,7 @@ class Game:
         self.active = False
         self.start_time = 0 
         self.winTime = 0
-        self.bestScore = INF
+        self.bestScore = readScore()
         self.buttons = self.createButtons()
         self.btWinSprites = self.createWinButtons()
         self.resumeSaved = False 
@@ -114,6 +113,7 @@ class Game:
             self.winTime = self._getCurrentTime()
             if(self.winTime < self.bestScore):
                 self.bestScore = self.winTime 
+                writeScore(self.bestScore)
             self.active = False
     
     def drawWinScreen(self):
@@ -172,6 +172,7 @@ class Game:
         for button in self.buttons:
             button.backToInit()
         self.active = True
+        self.resumeSaved = False
         self.start_time = pygame.time.get_ticks()
     
     def createWinButtons(self):

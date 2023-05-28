@@ -12,3 +12,11 @@ def writeBoard(board, filename="board.txt"):
         for row in board:
             line = ' '.join(str(num) for num in row)
             file.write(line + '\n')
+
+def readScore(filename="score.txt"):
+    with open(filename, 'r') as file:
+        return int(file.readline())
+
+def writeScore(score, filename="score.txt"):
+    with open(filename, 'w') as file:
+        file.write(str(score))

@@ -1,12 +1,9 @@
 from random import randint
 from random import choice
-from copy import deepcopy
 
 class Puzzle: #could be Board
     '''
-    static goal_state (method)
-    
-    self.size   (mb also static) nah  
+    self.size 
     self.state  = self.board
     self.blankPos
     '''
@@ -39,6 +36,14 @@ class Puzzle: #could be Board
     def __getitem__(self, key): 
         return self.state[key]
 
+    def setState(self, state):
+        self.state = state
+        #ot search for index in python list (not sure but)
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.state[i][j] == 0:
+                    self.blankPos = (i, j)
+
     def get_solved_state(self): 
         for i in range(self.size):
             for j in range(self.size):
@@ -49,7 +54,7 @@ class Puzzle: #could be Board
 # shufflesCount impacts performance
     def shuffleMoves(self):
         self.get_solved_state()
-        shufflesCount = 200
+        shufflesCount = 140
 
         for i in range(shufflesCount):
             dir = choice(self.DIRECTIONS)

@@ -2,6 +2,7 @@
 from gameSettings import *
 from board import Puzzle
 from puzzleStar import *
+from fileModule import *
 
 
 pygame.init()
@@ -18,23 +19,26 @@ class Game:
 
     def play(self): 
         self.clock = pygame.time.Clock()
-        self.board = PuzzleStar(size=GAME_SIZE)
-        self.active = True
+        self.board = PuzzleStar(size=GAME_SIZE) #could be PuzzleBoard with PuzzleStar inside but + GUI methods
+        self.active = False
         self.start_time = 0 
+        self.winTime = 0
         self.bestScore = INF
-        self.buttons = self.createButtons() 
+        self.buttons = self.createButtons()
+        self.btWinSprites = self.createWinButtons()
+        self.resumeSaved = False 
+        
         while True:
             if self.active:             
                 self.drawBoard()
                 #separate 
                 self.checkButtons() 
                 self.handleActiveEvents()
-               #separate
-                # self.reactToButtons()
                 self.display_score()
                 self.checkIfWon()
             else: 
                 self.drawWinScreen()
+                self.checkWinButtons()
                 self.display_score()
                 self.handleNonActiveEvents()
             
@@ -64,19 +68,18 @@ class Game:
                     button.clicked()
                     if button == self.btReshuffle:
                         self.board.shuffleMoves()
-                        self.btAutosolve.text = self.btAutosolve.initText
+                        self.btAutosolve.backToInit()
                     
                     elif button == self.btAutosolve and  button.clickedState == 1: 
                         self.dirs = self.board.IDAstar()
             
-                    elif button == self.btAutosolve and self.dirs:
-                        
+                    elif button == self.btAutosolve and self.dirs:     
                         d = self.dirs.pop(0)
                         self._moveTiles(d)
-
-                        button.missionCompleted() 
-                        if not self.dirs: button.clickedState = False  
-
+                        # button.missionCompleted() 
+                        # if not self.dirs: button.backToInit() -- cause game will end 
+                    elif button == self.btSave:
+                        writeBoard(self.board)
                     button.missionCompleted()
             
         self.buttons.draw(self.screen)
@@ -108,21 +111,22 @@ class Game:
     
     def checkIfWon(self):
         if(self.board.ifWon() and self.clock.get_time() > 1): 
-                    self.winTime = self._getCurrentTime()
-                    if(self.winTime < self.bestScore):
-                        self.bestScore = self.winTime 
-                    self.active = False
+            self.winTime = self._getCurrentTime()
+            if(self.winTime < self.bestScore):
+                self.bestScore = self.winTime 
+            self.active = False
     
     def drawWinScreen(self):
         self.screen.fill(BLUE)
         ''' sprite winText'''
-        win_surf = tileFont.render(f'You won!', 1, YELLOW)
-        win_rect = win_surf.get_rect(midbottom = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+        win_surf = tileFont.render(f'You won!', 1, GREY)
+        win_rect = win_surf.get_rect(midbottom = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2-20))
         self.screen.blit(win_surf, win_rect)
 
     def handleActiveEvents(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                writeBoard(self.board) # automatically saving board when exiting
                 pygame.quit()
                 quit(0)
             elif event.type == pygame.KEYDOWN:
@@ -157,10 +161,41 @@ class Game:
                 quit(0)
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE: 
-                    self.board.shuffleMoves()
-                    self.active = True
-                    self.start_time = pygame.time.get_ticks()
+                    self.restartGame()
+            elif event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                self.checkWinButtons(pos)
     
+    def restartGame(self):
+        if not self.resumeSaved: 
+            self.board.shuffleMoves()
+        for button in self.buttons:
+            button.backToInit()
+        self.active = True
+        self.start_time = pygame.time.get_ticks()
+    
+    def createWinButtons(self):
+        self.btResume = Button("Resume last game", (SCREEN_WIDTH//2- 125, SCREEN_HEIGHT//2 + 150),
+                              YELLOW, DARKGREEN, hover_color=GREY)
+        btWinSprites = pygame.sprite.Group()
+        btWinSprites.add(self.btResume)
+        return btWinSprites
+        # in createButtons I return the sprite so the same will do here
+    
+    def checkWinButtons(self, pos=None):
+        for button in self.btWinSprites:
+            button.showButton()
+            button.hovered()
+            if pos is not None: # bt was clicked 
+                if  button.rect.collidepoint(pos):
+                    button.clicked()
+                    if button == self.btResume:
+                        self.resumeSaved = True
+                        self.board.setState(readBoard()) 
+                        self.restartGame()
+                button.missionCompleted()
+        self.btWinSprites.draw(self.screen)
+
     def _getCurrentTime(self): 
         return int ((pygame.time.get_ticks() - self.start_time) / 1000)
     
@@ -171,10 +206,12 @@ class Game:
             score_rect = score_surf.get_rect(bottomleft = (510, 50))
 
         else: 
+            best_score_color = OLIVE 
+            if self.winTime == self.bestScore:  best_score_color = GREEN 
             score_surf = test_font.render(f'score: {self.winTime}', 1, OLIVE)
-            score_rect = score_surf.get_rect(center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2 + 50))
-            best_score_surf = test_font.render(f'Best score: {self.bestScore}', 1, OLIVE)
-            best_score_rect = score_surf.get_rect(center = (SCREEN_WIDTH//2 - 40, SCREEN_HEIGHT//2 + 100))
+            score_rect = score_surf.get_rect(center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2 + 30))
+            best_score_surf = test_font.render(f'Best score: {self.bestScore}', 1, best_score_color)
+            best_score_rect = score_surf.get_rect(center = (SCREEN_WIDTH//2 - 35, SCREEN_HEIGHT//2 + 80))
             self.screen.blit(best_score_surf, best_score_rect)
 
         self.screen.blit(score_surf, score_rect)

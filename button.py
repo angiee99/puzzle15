@@ -2,7 +2,7 @@ from gameSettings import *
 buttonFont = pygame.font.SysFont('Viga', 36)
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, text, pos, text_color=BLACK, bg_color=None, feedback=""):
+    def __init__(self, text, pos, text_color=BLACK, bg_color=None, feedback="", hover_color=BLUE):
         super().__init__()
         self.pos = pos
         self.text = text
@@ -10,7 +10,7 @@ class Button(pygame.sprite.Sprite):
         self.text_color = text_color
         self.bg_color = bg_color
         self.feedback = feedback
-
+        self.hover_color = hover_color
         self.clickedState = None
 
 
@@ -48,17 +48,18 @@ class Button(pygame.sprite.Sprite):
     def missionCompleted(self):
         if self.feedback == "" or self.clickedState == False: 
             self.clickedState = False
-        else:  #only if self.clickeState == 1
+        else:  
             self.text = self.feedback
             self.clickedState = 2
             self.image.blit(self.text_surf, self.text_pos)
-        if self.feedback != "" and self.clickedState != 2: 
-            self.text = self.initText 
-            self.image.blit(self.text_surf, self.text_pos)
+
     
+    def backToInit(self): 
+        self.text = self.initText 
+        self.clickedState = False
+
     def hovered(self):
         hover = self.rect.collidepoint(pygame.mouse.get_pos())
         if hover and not self.clickedState:
-            self.image.fill(BLUE)
+            self.image.fill(self.hover_color)
             self.image.blit(self.text_surf, self.text_pos)
-        # else:  self.image.fill(YELLOW)

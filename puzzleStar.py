@@ -25,9 +25,11 @@ class PuzzleStar(Puzzle):
         path = [self]
         dirs = []
         while True: 
-            ''' rem - miminam found for now'''
-            rem = self.search(path, 0, bound, dirs) 
-            if rem == True: #? 
+            ''' res - miminam found for now
+                    - True, if solved
+                    - INF if haven't found anything'''
+            res = self.search(path, 0, bound, dirs) 
+            if res == True: #? 
                 tDelta = (perf_counter_ns()-t1)/NANO_TO_SEC
                 print("Took {} seconds to find a solution of {} moves".format(tDelta, len(dirs)))
                 
@@ -35,10 +37,10 @@ class PuzzleStar(Puzzle):
                 sleep(0.3)
 
                 return dirs
-            elif rem == INF:
+            elif res == INF:
                 return None
             
-            bound = rem    
+            bound = res    
     
     def search(self, path, gScore, bound, dirs): 
         node = path[-1] #so path works like a stack 
@@ -65,11 +67,11 @@ class PuzzleStar(Puzzle):
             path.append(tryPuzzle)
             dirs.append(dir)
 
-            t = self.search(path, gScore+1, bound, dirs)
-            if t == True: 
+            result  = self.search(path, gScore+1, bound, dirs)
+            if result  == True: 
                 return True
-            if t < min: 
-                min = t
+            if result  < min: 
+                min = result 
 
             path.pop()
             dirs.pop()
@@ -89,10 +91,10 @@ class PuzzleStar(Puzzle):
       
     def heuristic(self):
         h = 0  
-        for i in range (self.size): 
-            for j in range (self.size):
-                if self.state[i][j] != 0:
-                    x1 = (self.state[i][j] - 1) // self.size
-                    y1 = (self.state[i][j] - 1) % self.size
+        for i in range (self._size): 
+            for j in range (self._size):
+                if self._state[i][j] != 0:
+                    x1 = (self._state[i][j] - 1) // self._size
+                    y1 = (self._state[i][j] - 1) % self._size
                     h += abs(x1 - i) + abs(y1 - j)
         return h

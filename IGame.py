@@ -14,17 +14,20 @@ class Game:
     def __init__(self): 
         # pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption(TITLE)
-
-    def play(self): 
-        self.clock = pygame.time.Clock()
+        pygame.display.set_caption(TITLE) 
+        
         self.board = PuzzleStar(size=GAME_SIZE) #could be PuzzleBoard with PuzzleStar inside but + GUI methods
         self.active = False
         self.start_time = 0 
         self.winTime = 0
-        self.bestScore = readScore()
+        self.fileHandler = FileModule()
+        self.bestScore = self.fileHandler.readScore()
         self.buttons = self.createButtons()
         self.btWinSprites = self.createWinButtons()
+
+    def play(self): 
+        self.clock = pygame.time.Clock()
+       
         self.resumeSaved = False 
         
         while True:
@@ -78,7 +81,7 @@ class Game:
                         # button.missionCompleted() 
                         # if not self.dirs: button.backToInit() -- cause game will end 
                     elif button == self.btSave:
-                        writeBoard(self.board)
+                        self.fileHandler.writeBoard(self.board)
                     button.missionCompleted()
             
         self.buttons.draw(self.screen)
@@ -113,20 +116,23 @@ class Game:
             self.winTime = self._getCurrentTime()
             if(self.winTime < self.bestScore):
                 self.bestScore = self.winTime 
-                writeScore(self.bestScore)
+                self.fileHandler.writeScore(self.bestScore)
             self.active = False
     
     def drawWinScreen(self):
         self.screen.fill(BLUE)
         ''' sprite winText'''
-        win_surf = tileFont.render(f'You won!', 1, GREY)
+        text1 ="Welcome to Puzzle 15"
+        text2 = "You won!"
+        if self.start_time == 0: win_surf = tileFont.render(text1, 1, GREY)
+        else: win_surf = tileFont.render(text2, 1, GREY)
         win_rect = win_surf.get_rect(midbottom = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2-20))
         self.screen.blit(win_surf, win_rect)
 
     def handleActiveEvents(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                writeBoard(self.board) # automatically saving board when exiting
+                self.fileHandler.writeBoard(self.board) # automatically saving board when exiting
                 pygame.quit()
                 quit(0)
             elif event.type == pygame.KEYDOWN:
@@ -192,7 +198,7 @@ class Game:
                     button.clicked()
                     if button == self.btResume:
                         self.resumeSaved = True
-                        self.board.setState(readBoard()) 
+                        self.board.setState(self.fileHandler.readBoard()) 
                         self.restartGame()
                 button.missionCompleted()
         self.btWinSprites.draw(self.screen)

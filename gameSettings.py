@@ -5,13 +5,19 @@ import pygame
 # buttonFont = pygame.font.SysFont('Viga', 36)
 
 SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 500
+SCREEN_HEIGHT = 530
 BOARD_WIDTH = 480
 BOARD_HEIGHT = 480
 FPS = 60
 TILESIZE = 128
 GAME_SIZE = 4 # 4
 TITLE = "Puzzle Game 15" # could be formatted so not only 15 is here
+
+NLIGHT ="#EFD9CE"
+NBLUE ="#587792" 
+NLIGHTBLUE = "#73A9AD"
+
+#BOARD = NBLUE 
 
 WHITE = "#FBF8F1"
 BLACK = "#1A120B"

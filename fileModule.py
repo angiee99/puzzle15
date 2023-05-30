@@ -3,7 +3,8 @@ class FileModule:
         self._boardFname = boardFname
         self._scoreFname = scoreFname
     
-    def readBoard(self): # for this need ano
+    def readBoard(self): # validate if it is a board, if no - hell kmows what to do
+                         # opt1: throw, opt2: tell that sorry impossible, just shuffle 
         board = []
         with open(self.boardFname, 'r') as file:
             for line in file:

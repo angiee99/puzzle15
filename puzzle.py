@@ -1,5 +1,5 @@
 from random import randint
-from random import choice
+from random import choice, random
 
 class Puzzle: #could be Board
     '''
@@ -29,7 +29,6 @@ class Puzzle: #could be Board
             self._state = [row[:] for row in other.state]
             self._blankPos = other.blankPos
 
-
     def __str__(self):
         return '\n'.join(map(str, self._state))
     
@@ -55,8 +54,7 @@ class Puzzle: #could be Board
     def shuffleMoves(self):
         self.get_solved_state()
         shufflesCount = 140
-
-        for i in range(shufflesCount):
+        for _ in range(shufflesCount):
             dir = choice(self.DIRECTIONS)
             self.move(dir)
 
@@ -71,7 +69,7 @@ class Puzzle: #could be Board
         # Fisher-Yatse
             # Start from the last element and swap one by one. We don't
             # need to run for the first element that's why i > 0
-        for i in range(n-1,(n-1)//2,-1):
+        for i in range(n-1,0,-1):
             # Pick a random index from 0 to i
             j = randint(0,i)
             arr[i],arr[j] = arr[j],arr[i]
@@ -84,7 +82,7 @@ class Puzzle: #could be Board
                     self._blankPos = (i, j) #
                 self._state[i][j] = arr[index]
                 index+=1 
-        # print(self)
+        print(self)
         self.isSolvable()
 
     def getInvCount(self):
@@ -103,6 +101,7 @@ class Puzzle: #could be Board
                 # i < j and arr[i] > arr[j]
                 if (arr1[j] and arr1[i] and arr1[i] > arr1[j]):
                     inv_count+=1
+        print(inv_count)
         return inv_count
 
     def isSolvable(self):
@@ -116,15 +115,15 @@ class Puzzle: #could be Board
     
         else:    # grid is even
             pos = self._blankPos[0] + 1
-            # print(pos)
+            print(pos)
             # print(pos & 1) # ??? this notation 
             if (pos & 1): #odd 
                 solvable =  (invCount & 1) # yes if invCount is odd
             else:
-                solvable =  ~(invCount & 1) # yes if invCount is even (will turn to 1)
+                solvable =  not (invCount & 1) # yes if invCount is even (will turn to 1)
 
-        # if solvable: print("Solvable")
-        # else: print("Not solvable")
+        if solvable: print("Solvable")
+        else: print("Not solvable")
         if not solvable: 
             i = 0 
             j = 1

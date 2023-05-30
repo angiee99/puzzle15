@@ -28,7 +28,7 @@ class Button(pygame.sprite.Sprite):
         self._rect = self._image.get_rect()
           
         if self._bg_color is None:
-            self._image.fill(OLIVE)
+            self._image.fill(NBLUE)
         else:
             self._image.fill(self._bg_color)
             

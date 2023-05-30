@@ -1,4 +1,4 @@
-from board import Puzzle
+from puzzle import Puzzle
 from puzzleList import StateList
 from time import perf_counter_ns, sleep
 
@@ -22,13 +22,14 @@ class PuzzleStar(Puzzle):
         ''' bound is like the conut of levels we're looking at, but more flexible'''
         bound = self._hScore(self) # hScore could be the method of PuzzleList class
         print(bound)
-        path = [self]
+        # path = [self]
+        self.puzzleList.insert(self)
         dirs = []
         while True: 
             ''' res - miminam found for now
                     - True, if solved
                     - INF if haven't found anything'''
-            res = self.search(path, 0, bound, dirs) 
+            res = self.search(self, 0, bound, dirs) 
             if res == True: #? 
                 tDelta = (perf_counter_ns()-t1)/NANO_TO_SEC
                 print("Took {} seconds to find a solution of {} moves".format(tDelta, len(dirs)))
@@ -42,8 +43,8 @@ class PuzzleStar(Puzzle):
             
             bound = res    
     
-    def search(self, path, gScore, bound, dirs): 
-        node = path[-1] #so path works like a stack 
+    def search(self, node, gScore, bound, dirs): 
+        # node = path[-1] #so path works like a stack 
 
         F = gScore + self._hScore(node)
         if F > bound: 
@@ -61,19 +62,22 @@ class PuzzleStar(Puzzle):
 
             tryDir, tryPuzzle = node.tryMoveWithCopy(dir) # simulateMove
             
-            if not tryDir or tryPuzzle in path: # could be just written in another way 
+            if not tryDir or self.puzzleList.isInList(tryPuzzle): # could be just written in another way 
                 continue
 
-            path.append(tryPuzzle)
+            # path.append(tryPuzzle)
+            self.puzzleList.insert(tryPuzzle)
             dirs.append(dir)
 
-            result  = self.search(path, gScore+1, bound, dirs)
+            result  = self.search(tryPuzzle, gScore+1, bound, dirs)
             if result  == True: 
                 return True
             if result  < min: 
                 min = result 
 
-            path.pop()
+            # path.pop()
+                #rewrite through method
+            self.puzzleList.records.popitem(hash(tryPuzzle))
             dirs.pop()
         return min
     

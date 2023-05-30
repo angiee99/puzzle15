@@ -1,4 +1,4 @@
-from board import Puzzle
+from puzzle import Puzzle
 from collections import OrderedDict
 ''' list of states of Puzzle
 each value in dictionary 
@@ -11,25 +11,38 @@ and extract it instead of counting again
 class StateList: 
     def __init__(self, cache_size = 4000):
         # self.records = {}
-        self.records = OrderedDict()
-        self.cache_size = cache_size
+        self._records = OrderedDict()
+        self._cache_size = cache_size
         self.c = 0
+   
+    @property
+    def records(self):
+        return self._records
+    @property
+    def cache_size(self):
+        return self._cache_size
     
-    def insert(self, node, key):
-        self.records[key] = node.heuristic()
-
+    def isInList(self, state):
+        key = hash(str(state))
+        return key in self._records
+    
+    
+    def insert(self, node, key=None):
+        self.c+=1
+        if not key:   key = hash(str(node))
+        self._records[key] = node.heuristic()
 
     def getHScore(self, node):
         key = hash(str(node))
-        if key not in self.records:
+        if key not in self._records:
             self.insert(node, key)  
-            if len(self.records) / self.cache_size > 0.85:
-                self.c += 1
-                self.records.popitem(last=False)
+            if len(self._records) / self._cache_size > 0.85:
+                # self.c += 1
+                self._records.popitem(last=False)
             # Remove the least recently accessed item
         else:
-             self.records.move_to_end(key)
-        return self.records[key]
+             self._records.move_to_end(key)
+        return self._records[key]
        
     def murmurhash2(self, key, seed=0):
         # multimplication, rotation, XOR

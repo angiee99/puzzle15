@@ -88,7 +88,7 @@ class Game:
                         # button.missionCompleted() 
                         # if not self.dirs: button.backToInit() -- cause game will end 
                     elif button == self.btSave:
-                        self.fileHandler.writeBoard(self.board)
+                        self.fileHandler.writeBoard(self.board.state)
 
                     elif button == self.btRules and button.clickedState == 1:
                         self.showing_rules = True
@@ -129,7 +129,7 @@ class Game:
             self.winTime = self._getCurrentTime()
             if(self.winTime < self.bestScore):
                 self.bestScore = self.winTime 
-                self.fileHandler.writeScore(self.bestScore)
+                self.fileHandler.writeScore(self.bestScore) 
             self.active = False
     
     def drawWinScreen(self):
@@ -149,7 +149,7 @@ class Game:
     def handleActiveEvents(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.fileHandler.writeBoard(self.board) # automatically saving board when exiting
+                self.fileHandler.writeBoard(self.board.state) # automatically saving board when exiting
                 pygame.quit()
                 quit(0)
             elif event.type == pygame.KEYDOWN:
@@ -213,7 +213,7 @@ class Game:
                     button.clicked()
                     if button == self.btResume:
                         self.resumeSaved = True
-                        self.board.setState(self.fileHandler.readBoard()) 
+                        self.board.setState(self.fileHandler.readBoard())
                         self.restartGame()
                 button.missionCompleted()
         self.btWinSprites.draw(self.screen)

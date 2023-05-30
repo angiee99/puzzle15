@@ -2,17 +2,15 @@
 from gameSettings import *
 from puzzleStar import *
 from fileModule import *
- 
+from popupScreen import PopupScreen
 
 pygame.init()
 from button import Button
 tileFont = pygame.font.SysFont('Viga', 72)
 scoreFont = pygame.font.SysFont('Viga', 48)
-# buttonFont = pygame.font.SysFont('Viga', 36)
 
 class Game: 
     def __init__(self): 
-        # pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption(TITLE) 
 
@@ -25,18 +23,26 @@ class Game:
         self.buttons = self.createButtons()
         self.btWinSprites = self.createWinButtons()
 
+        self.popup_screen = PopupScreen()
+        self.showing_rules = False
+
     def play(self): 
         self.clock = pygame.time.Clock()
         self.resumeSaved = False 
         
         while True:
-            if self.active:             
-                self.drawBoard()
-                #separate 
-                self.checkButtons() 
-                self.handleActiveEvents()
-                self.display_score()
-                self.checkIfWon()
+            if self.active:   
+                if self.showing_rules:
+                    self.popup_screen.draw()
+                    self.showing_rules = self.popup_screen.handle_events()
+                    
+                else:           
+                    self.drawBoard()
+                    #separate 
+                    self.checkButtons() 
+                    self.handleActiveEvents()
+                    self.display_score()
+                    self.checkIfWon()
             else: 
                 self.drawWinScreen()
                 self.checkWinButtons()
@@ -50,13 +56,13 @@ class Game:
         self.btReshuffle = Button("Reshuffle", (505, 130), NLIGHT, NLIGHTBLUE, hover_color=GREY)
         self.btAutosolve = Button("Autosolve", (505, 230), NBLUE, NLIGHT, "Click&Move")
         self.btSave = Button("Save game", (505, 330), NLIGHT, NLIGHTBLUE, hover_color=GREY)
-        self.btI    = Button("info", (700, 470), NLIGHT, hover_color=NLIGHTBLUE)
+        self.btRules    = Button("info", (700, 470), NLIGHT, hover_color=NLIGHTBLUE)
         btSprites = pygame.sprite.Group()
         
         btSprites.add(self.btReshuffle)
         btSprites.add(self.btAutosolve)
         btSprites.add(self.btSave)
-        btSprites.add(self.btI)
+        btSprites.add(self.btRules)
 
         return btSprites
         
@@ -83,6 +89,12 @@ class Game:
                         # if not self.dirs: button.backToInit() -- cause game will end 
                     elif button == self.btSave:
                         self.fileHandler.writeBoard(self.board)
+
+                    elif button == self.btRules and button.clickedState == 1:
+                        self.showing_rules = True
+                        self.popup_screen.draw()
+                        button.backToInit()
+
                     button.missionCompleted()
             
         self.buttons.draw(self.screen)
@@ -160,13 +172,7 @@ class Game:
             elif event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 self.checkButtons(pos)
-                
-                # puzzleCoord = (pos[1]//TILESIZE,
-                #                 pos[0]//TILESIZE) #?
-                # dir = (puzzleCoord[0] - self.board.blankPos[0],
-                #         puzzleCoord[1] - self.board.blankPos[1])
                 self.moveTiles(pos=pos)
-
 
     def handleNonActiveEvents(self):
         for event in pygame.event.get():
@@ -247,5 +253,6 @@ class Game:
 
             
 if __name__ == "__main__": 
+
     game = Game()
     game.play()

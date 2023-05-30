@@ -1,5 +1,5 @@
-import pygame
 
+import pygame
 # tileFont = pygame.font.SysFont('Viga', 72)
 # scoreFont = pygame.font.SysFont('Viga', 36)
 # buttonFont = pygame.font.SysFont('Viga', 36)

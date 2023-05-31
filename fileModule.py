@@ -17,10 +17,7 @@ class FileModule:
 
         board_str = str(board)
         calculated_hash = str(self.murmurhash2(board_str.encode()) ) # Use the same hash algorithm
-        # calculated_hash = hash_object.hexdigest()  # Calculate the hash value for the newly read board
-        print(stored_hash)
-        print(calculated_hash)
-        print(board)
+
         if stored_hash == calculated_hash:
             return board
         else: #!! do something -> dont let it terminate
@@ -33,8 +30,7 @@ class FileModule:
                     # as it may cause problems 
         with open(self.boardFname, 'w') as file:
             board_str = str(board)
-            hash_object = self.murmurhash2(board_str.encode())  # Use a suitable hash algorithm
-            hash_value = str(hash_object)  # Obtain the string representation of the hash value
+            hash_value = str(self.murmurhash2(board_str.encode()) ) # using a hash algorithm
 
             file.write(hash_value + '\n')  # Writing the hash value
             for row in board:
@@ -45,10 +41,16 @@ class FileModule:
 
     def readScore(self):
         with open(self.scoreFname, 'r') as file:
-            return int(file.readline())
+            stored_hash = file.readline().strip()
+            score = (file.readline())
+        calculated_hash =  str(self.murmurhash2(score) )
+        if calculated_hash == stored_hash:
+            return int(score)
+        else: return 1000
 
     def writeScore(self, score):
         with open(self.scoreFname, 'w') as file:
+            file.write(str (self.murmurhash2(str(score))) + '\n')
             file.write(str(score))
     
     @property

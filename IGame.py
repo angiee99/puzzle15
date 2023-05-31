@@ -5,7 +5,7 @@ from fileModule import *
 from popupScreen import PopupScreen
 
 pygame.init()
-from button import Button
+from buttonList import ButtonList
 tileFont = pygame.font.SysFont('Viga', 72)
 scoreFont = pygame.font.SysFont('Viga', 48)
 
@@ -20,9 +20,7 @@ class Game:
         self.winTime = 0
         self.fileHandler = FileModule()
         self.bestScore = self.fileHandler.readScore()
-        self.buttons = self.createButtons()
-        self.btWinSprites = self.createWinButtons()
-
+        self.buttons = ButtonList(self) # game is the attr of ButtonList
         self.popup_screen = PopupScreen()
         self.showing_rules = False
 
@@ -34,71 +32,22 @@ class Game:
             if self.active:   
                 if self.showing_rules:
                     self.popup_screen.draw()
-                    self.showing_rules = self.popup_screen.handle_events()
-                    
+                    self.showing_rules = self.popup_screen.handle_events()                    
                 else:           
                     self.drawBoard()
-                    #separate 
-                    self.checkButtons() 
+                    self.buttons.draw() 
                     self.handleActiveEvents()
                     self.display_score()
                     self.checkIfWon()
             else: 
                 self.drawWinScreen()
-                self.checkWinButtons()
+                self.buttons.draw() 
                 self.display_score()
                 self.handleNonActiveEvents()
             
             pygame.display.flip()
             self.clock.tick(FPS)
    
-    def createButtons(self):
-        self.btReshuffle = Button("Reshuffle", (505, 130), NLIGHT, NLIGHTBLUE, hover_color=GREY)
-        self.btAutosolve = Button("Autosolve", (505, 230), NBLUE, NLIGHT, "Click&Move")
-        self.btSave = Button("Save game", (505, 330), NLIGHT, NLIGHTBLUE, hover_color=GREY)
-        self.btRules    = Button("info", (700, 470), NLIGHT, hover_color=NLIGHTBLUE)
-        btSprites = pygame.sprite.Group()
-        
-        btSprites.add(self.btReshuffle)
-        btSprites.add(self.btAutosolve)
-        btSprites.add(self.btSave)
-        btSprites.add(self.btRules)
-
-        return btSprites
-        
-    def checkButtons(self, pos=None): 
-        for button in self.buttons:
-            button.showButton()
-            button.hovered()
-            if pos is not None: # bt was clicked 
-                if  button.rect.collidepoint(pos):
-                    button.clicked()
-                    if button == self.btReshuffle:
-                        self.board.shuffleMoves()
-                        self.btAutosolve.backToInit()
-                        self._resetScore()
-                    
-                    elif button == self.btAutosolve and  button.clickedState == 1: 
-                        self.dirs = self.board.IDAstar()
-                        self._resetScore()
-            
-                    elif button == self.btAutosolve and self.dirs:     
-                        d = self.dirs.pop(0)
-                        self.moveTiles(dir = d)
-                        # button.missionCompleted() 
-                        # if not self.dirs: button.backToInit() -- cause game will end 
-                    elif button == self.btSave:
-                        self.fileHandler.writeBoard(self.board.state)
-
-                    elif button == self.btRules and button.clickedState == 1:
-                        self.showing_rules = True
-                        self.popup_screen.draw()
-                        button.backToInit()
-
-                    button.missionCompleted()
-            
-        self.buttons.draw(self.screen)
-
     def drawBoard(self):
         self.screen.fill(NBLUE)
 
@@ -171,7 +120,9 @@ class Game:
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
-                self.checkButtons(pos)
+                # self.checkButtons(pos)
+                self.buttons.update(pos)
+    
                 self.moveTiles(pos=pos)
 
     def handleNonActiveEvents(self):
@@ -184,40 +135,19 @@ class Game:
                     self.restartGame()
             elif event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
-                self.checkWinButtons(pos)
+                self.buttons.update(pos)
     
     def restartGame(self):
         if not self.resumeSaved: 
             self.board.shuffleMoves()
-        for button in self.buttons:
-            button.backToInit()
+        # for button in self.buttons:
+        #     button.backToInit()
+        self.buttons.reset()
         self.active = True
         self.resumeSaved = False
         self._resetScore()
         # self.start_time = pygame.time.get_ticks()
     
-    def createWinButtons(self):
-        self.btResume = Button("Resume last game", (SCREEN_WIDTH//2- 125, SCREEN_HEIGHT//2 + 150),
-                              NLIGHT, NLIGHTBLUE, hover_color=GREY)
-        btWinSprites = pygame.sprite.Group()
-        btWinSprites.add(self.btResume)
-        return btWinSprites
-        # in createButtons I return the sprite so the same will do here
-    
-    def checkWinButtons(self, pos=None):
-        for button in self.btWinSprites:
-            button.showButton()
-            button.hovered()
-            if pos is not None: # bt was clicked 
-                if  button.rect.collidepoint(pos):
-                    button.clicked()
-                    if button == self.btResume:
-                        self.resumeSaved = True
-                        self.board.setState(self.fileHandler.readBoard())
-                        self.restartGame()
-                button.missionCompleted()
-        self.btWinSprites.draw(self.screen)
-
     def _getCurrentTime(self): 
         return int ((pygame.time.get_ticks() - self.start_time) / 1000)
     
@@ -237,21 +167,19 @@ class Game:
 
         self.screen.blit(score_surf, score_rect)
 
-    def moveTiles(self, pos=None, dir=None): #bug
+    def moveTiles(self, pos=None, dir=None):
         if pos:
             puzzleCoord = (pos[1]//TILESIZE,
                        pos[0]//TILESIZE) #?
             dir = (puzzleCoord[0] - self.board.blankPos[0],
                     puzzleCoord[1] - self.board.blankPos[1])
-            # self.board.move(dir)
         self.board.move(dir)
     
     def _resetScore(self): 
         self.start_time = pygame.time.get_ticks()
 
     
-
-            
+  
 if __name__ == "__main__": 
 
     game = Game()

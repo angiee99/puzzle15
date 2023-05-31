@@ -137,7 +137,7 @@ class Game:
         click_surf = scoreFont.render("Press Space key to start", 1, NLIGHT)
         click_rect = click_surf.get_rect(midbottom = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
         ''' sprite winText ?'''
-        text1 ="Welcome to Puzzle 15"
+        text1 = "Welcome to Puzzle 15"
         text2 = "You won!"
         if self.start_time == 0: win_surf = tileFont.render(text1, 1, NLIGHT)
         else: win_surf = tileFont.render(text2, 1, NLIGHT)

@@ -20,7 +20,7 @@ class PuzzleStar(Puzzle):
 
         t1 =  perf_counter_ns()
         ''' bound is like the conut of levels we're looking at, but more flexible'''
-        bound = self._hScore(self) # hScore could be the method of PuzzleList class
+        bound = self.puzzleList.getHScore(self) # hScore could be the method of PuzzleList class
         print(bound)
         # path = [self]
         self.puzzleList.insert(self)
@@ -46,7 +46,7 @@ class PuzzleStar(Puzzle):
     def search(self, node, gScore, bound, dirs): 
         # node = path[-1] #so path works like a stack 
 
-        F = gScore + self._hScore(node)
+        F = gScore + self.puzzleList.getHScore(node)
         if F > bound: 
             return F
         if node.ifWon(): 
@@ -80,10 +80,6 @@ class PuzzleStar(Puzzle):
             self.puzzleList.records.popitem(hash(tryPuzzle))
             dirs.pop()
         return min
-    
-    def _hScore(self, node):
-        h = self.puzzleList.getHScore(node)
-        return h
     
     def tryMoveWithCopy(self, dir):
         simPuzzle = PuzzleStar(other=self)  # Create a copy of the current puzzle

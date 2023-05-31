@@ -1,4 +1,4 @@
-from puzzle import Puzzle
+# from puzzle import Puzzle
 from collections import OrderedDict
 ''' list of states of Puzzle
 each value in dictionary 
@@ -25,8 +25,7 @@ class StateList:
     def isInList(self, state):
         key = hash(str(state))
         return key in self._records
-    
-    
+        
     def insert(self, node, key=None):
         self.c+=1
         if not key:   key = hash(str(node))
@@ -41,7 +40,7 @@ class StateList:
                 self._records.popitem(last=False)
             # Remove the least recently accessed item
         else:
-             self._records.move_to_end(key)
+            self._records.move_to_end(key)
         return self._records[key]
        
     def murmurhash2(self, key, seed=0):

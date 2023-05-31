@@ -15,6 +15,7 @@ class Button(pygame.sprite.Sprite):
    
 
     def showButton(self):
+    #could be separate
         self.text_surf = buttonFont.render(self._text, True, self._text_color).convert_alpha()
         text_size = self.text_surf.get_size()
 
@@ -23,7 +24,7 @@ class Button(pygame.sprite.Sprite):
         if self._bg_color is not None:
             button_width  = 250
             button_height *= 2
-
+    #could be separate
         self._image = pygame.Surface((button_width, button_height))
         self._rect = self._image.get_rect()
           
@@ -40,14 +41,14 @@ class Button(pygame.sprite.Sprite):
     #прапорець wasClicked  = ін проусес
     def clicked(self):
         if self._clickedState == 1: self._clickedState += 1
-        elif self._clickedState == 2:  self._clickedState = 2
+        elif self._clickedState == 2: return
         else: self._clickedState = 1
         self._image.fill(YELLOW)
    
     #змінить прапорець wasClicked на реді 
     def missionCompleted(self):
         if self._feedback == "" or self._clickedState == False: 
-            self._clickedState = False
+            return
         else:  
             self._text = self._feedback
             self._clickedState = 2

@@ -2,7 +2,7 @@
 from gameSettings import *
 from puzzleStar import *
 from fileModule import *
-from popupScreen import PopupScreen
+from popupScreen import Screen
 
 pygame.init()
 from buttonList import ButtonList
@@ -21,7 +21,7 @@ class Game:
         self.fileHandler = FileModule()
         self.bestScore = self.fileHandler.readScore()
         self.buttons = ButtonList(self) # game is the attr of ButtonList
-        self.popup_screen = PopupScreen()
+        self.rules_screen = Screen()
         self.showing_rules = False
 
     def play(self): 
@@ -31,8 +31,8 @@ class Game:
         while True:
             if self.active:   
                 if self.showing_rules:
-                    self.popup_screen.draw()
-                    self.showing_rules = self.popup_screen.handle_events()                    
+                    self.rules_screen.draw()
+                    self.showing_rules = self.rules_screen.handle_events()                    
                 else:           
                     self.drawBoard()
                     self.buttons.draw() 
@@ -140,13 +140,12 @@ class Game:
     def restartGame(self):
         if not self.resumeSaved: 
             self.board.shuffleMoves()
-        # for button in self.buttons:
-        #     button.backToInit()
+
         self.buttons.reset()
         self.active = True
         self.resumeSaved = False
         self._resetScore()
-        # self.start_time = pygame.time.get_ticks()
+
     
     def _getCurrentTime(self): 
         return int ((pygame.time.get_ticks() - self.start_time) / 1000)

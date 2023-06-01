@@ -62,7 +62,7 @@ class ButtonList: #mb button Container
             if  button.rect.collidepoint(pos):
                 button.clicked()
                 if button == self.btResume:
-                    self.resumeSaved = True
+                    self.game.resumeSaved = True
                     self.game.board.setState(self.game.fileHandler.readBoard())
                     self.game.restartGame()
             button.missionCompleted()
@@ -91,9 +91,11 @@ class ButtonList: #mb button Container
                 elif button == self.btRules and button.clickedState == 1:
                     self.game.showing_rules = True
                     self.game.rules_screen.draw()
-                    button.backToInit()
 
-                button.missionCompleted()
+            
+            button.missionCompleted()
+            if button.feedback == "": 
+                button.backToInit()
    
     @property 
     def game(self):

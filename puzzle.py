@@ -1,5 +1,5 @@
 from random import randint
-from random import choice, random
+from random import choice
 
 class Puzzle: #could be Board
     '''

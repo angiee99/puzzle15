@@ -120,7 +120,6 @@ class Game:
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
-                # self.checkButtons(pos)
                 self.buttons.update(pos)
     
                 self.moveTiles(pos=pos)

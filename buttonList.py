@@ -13,8 +13,8 @@ class ButtonList: #mb button Container
     def createActiveBt(self):
         self.btReshuffle = Button("Reshuffle", (505, 130), NLIGHT, NLIGHTBLUE)
         self.btAutosolve = Button("Autosolve", (505, 230), NBLUE, NLIGHT, "Click&Move", hover_color=NLIGHTBLUE)
-        self.btSave = Button("Save game", (505, 330), NLIGHT, NLIGHTBLUE)
-        self.btRules    = Button("info", (700, 470), NLIGHT)
+        self.btSave  = Button("Save game", (505, 330), NLIGHT, NLIGHTBLUE)
+        self.btRules = Button("info", (700, 470), NLIGHT)
         btSprites = pygame.sprite.Group()
         
         btSprites.add(self.btReshuffle)

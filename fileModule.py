@@ -1,7 +1,7 @@
 from puzzleStar import *
 from validator import NumberValidator
 class FileModule:
-    def __init__(self, boardFname="board.txt", scoreFname= "score.txt"):
+    def __init__(self, boardFname="files/board.txt", scoreFname= "files/score.txt"):
         self._boardFname = boardFname
         self._scoreFname = scoreFname
         self.validator = NumberValidator()

@@ -1,8 +1,8 @@
 from gameSettings import *
-buttonFont = pygame.font.SysFont('Viga', 36)
+buttonFont = pygame.font.SysFont('Segoe UI', 28)
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, text, pos, text_color=BLACK, bg_color=None, feedback="", hover_color=BLUE):
+    def __init__(self, text, pos, text_color=BLACK, bg_color=None, feedback="", hover_color=GREY):
         super().__init__()
         self._pos = pos
         self._text = text

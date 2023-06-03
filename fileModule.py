@@ -46,7 +46,7 @@ class FileModule:
         calculated_hash =  str(self.murmurhash2(score) )
         if calculated_hash == stored_hash:
             return int(score)
-        else: return 1000
+        else: return 100
 
     def writeScore(self, score):
         with open(self.scoreFname, 'w') as file:

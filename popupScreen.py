@@ -7,7 +7,7 @@ from gameSettings import *
 class Screen:
     def __init__(self):
         self.screen = pygame.display.get_surface()
-        self.font = pygame.font.SysFont('Arial', 36)
+        self.font = pygame.font.SysFont('Segoe UI', 36)
         self.createTitle()
         self.createFooter()
         self.createRules()

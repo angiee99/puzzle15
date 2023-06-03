@@ -6,8 +6,8 @@ from popupScreen import Screen
 
 pygame.init()
 from buttonList import ButtonList
-tileFont = pygame.font.SysFont('Viga', 72)
-scoreFont = pygame.font.SysFont('Viga', 48)
+tileFont = pygame.font.SysFont('Segoe UI', 56)
+scoreFont = pygame.font.SysFont('Segoe UI', 40)
 
 class Game: 
     def __init__(self): 
@@ -151,8 +151,8 @@ class Game:
     
     def display_score(self): 
         if self.active:
-            score_surf = scoreFont.render(f'score: {self._getCurrentTime()}', 1, BLUE)
-            score_rect = score_surf.get_rect(bottomleft = (505, 60))
+            score_surf = scoreFont.render(f'score: {self._getCurrentTime()}', 1, NLIGHT)
+            score_rect = score_surf.get_rect(bottomleft = (505, 70))
 
         else: 
             best_score_color = NLIGHTBLUE
@@ -160,7 +160,7 @@ class Game:
             score_surf = scoreFont.render(f'score: {self.winTime}', 1, NLIGHTBLUE)
             score_rect = score_surf.get_rect(center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2 + 30))
             best_score_surf = scoreFont.render(f'Best score: {self.bestScore}', 1, best_score_color)
-            best_score_rect = score_surf.get_rect(center = (SCREEN_WIDTH//2 - 35, SCREEN_HEIGHT//2 + 80))
+            best_score_rect = score_surf.get_rect(topleft = (SCREEN_WIDTH//2 - 115, SCREEN_HEIGHT//2 + 70))
             self.screen.blit(best_score_surf, best_score_rect)
 
         self.screen.blit(score_surf, score_rect)

@@ -263,7 +263,3 @@ class Game:
     def showing_rules(self, flag):
         self.__showing_rules = flag
     
-if __name__ == "__main__": 
-
-    game = Game()
-    game.play()

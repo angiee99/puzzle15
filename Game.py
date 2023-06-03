@@ -2,7 +2,7 @@
 from gameSettings import *
 from puzzleStar import *
 from fileModule import *
-from popupScreen import Screen
+from rulesScreen import Screen
 
 pygame.init()
 from buttonList import ButtonList

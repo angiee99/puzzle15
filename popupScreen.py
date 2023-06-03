@@ -32,9 +32,9 @@ class Screen:
             "5. You can save any game board for later." , 
             "6. Get the best score and win the game, dude." 
         ]
-
-        self.rule_font = pygame.font.SysFont('Arial', 24)
+        self.rule_font = pygame.font.SysFont('Segoe UI', 24)
         self.line_height = self.rule_font.get_linesize()
+        
     def createTitle(self):
         self.title_text = self.font.render("Puzzle 15", True, NLIGHT)
         self.title_rect = self.title_text.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2-170))

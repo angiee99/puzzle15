@@ -8,13 +8,13 @@ pygame.init()
 from buttonList import ButtonList
 tileFont = pygame.font.SysFont('Segoe UI', 56)
 scoreFont = pygame.font.SysFont('Segoe UI', 40)
-
+massageFont = pygame.font.SysFont('Segoe UI', 28)
 class Game: 
     def __init__(self): 
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption(TITLE) 
 
-        self.board = PuzzleStar(size=GAME_SIZE) #could be PuzzleBoard with PuzzleStar inside but + GUI methods
+        self.board = PuzzleStar(size=GAME_SIZE)
         self.active = False
         self.start_time = 0 
         self.winTime = 0
@@ -134,8 +134,24 @@ class Game:
                     self.restartGame()
             elif event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
-                self.buttons.update(pos)
+                try:
+                    self.buttons.update(pos)
+                except TypeError as e: 
+                    self.displayMassage([f"{e}","Cannot get the board, sorry"])
+                except ValueError as e: 
+                    self.displayMassage([f"{e}","Cannot get the board, sorry"])
+                
     
+    def displayMassage(self, text):
+        padding = 0
+        for part in text:
+            sms_surface = massageFont.render(part, True, NBLUE, NLIGHT)
+            sms_rect = sms_surface.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2+ 100+padding))
+            self.screen.blit(sms_surface, sms_rect)
+            padding += 40
+        pygame.display.flip()
+        sleep(2.5)
+
     def restartGame(self):
         if not self.resumeSaved: 
             self.board.shuffleMoves()

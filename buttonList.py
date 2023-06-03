@@ -62,10 +62,12 @@ class ButtonList: #mb button Container
             if  button.rect.collidepoint(pos):
                 button.clicked()
                 if button == self.btResume:
-                    self.game.resumeSaved = True
-                    self.game.board.setState(self.game.fileHandler.readBoard())
-                    self.game.restartGame()
-            button.missionCompleted()
+                    saved_board = self.game.fileHandler.readBoard()
+                    if saved_board: # if the board is read correctly
+                        self.game.resumeSaved = True
+                        self.game.board.setState(saved_board)
+                        self.game.restartGame()
+            button.backToInit()
     
 
     def checkAButtons(self, pos=None): 

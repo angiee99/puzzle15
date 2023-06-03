@@ -48,7 +48,7 @@ class Button(pygame.sprite.Sprite):
     #змінить прапорець wasClicked на реді 
     def missionCompleted(self):
         if self._feedback == "" or self._clickedState == False: 
-            self._clickedState == False
+            self._clickedState = False
         else:  
             self._text = self._feedback
             self._clickedState = 2

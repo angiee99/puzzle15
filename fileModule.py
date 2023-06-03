@@ -1,17 +1,25 @@
 from puzzleStar import *
+from validator import NumberValidator
 class FileModule:
     def __init__(self, boardFname="board.txt", scoreFname= "score.txt"):
         self._boardFname = boardFname
         self._scoreFname = scoreFname
+        self.validator = NumberValidator()
    
     def readBoard(self):
-        # read board from file
-        # validate if it is a board, if no - hell kmows what to do
-                         # opt1: throw, opt2: tell that sorry impossible, just shuffle 
+        '''
+        read board from file
+        validate if it is a board that was saved 
+        if not then raises ValueError or TypeError
+        '''
         board = []
         with open(self.boardFname, 'r') as file:
             stored_hash = file.readline().strip()
             for line in file:
+                numbers = line.strip().split()
+                if not all(self.validator.isPositiveInteger(num) for num in numbers):
+                    raise TypeError("Unexpected characters in place of tile numbers")
+                
                 row = [int(num) for num in line.split()]
                 board.append(row)
 
@@ -21,7 +29,7 @@ class FileModule:
         if stored_hash == calculated_hash:
             return board
         else: #!! do something -> dont let it terminate
-            return None
+            raise ValueError("The file was changed from the outside")
     
     def writeBoard(self, board):
         # writing a hash of the board 

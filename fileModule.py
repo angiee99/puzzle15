@@ -10,8 +10,8 @@ class FileModule:
     def __init__(self, boardFname="files/board.txt", scoreFname= "files/score.txt"):
         self._boardFname = boardFname
         self._scoreFname = scoreFname
-        self.validator = NumberValidator()
-        self.hashM = HashManager()
+        self.__validator = NumberValidator()
+        self.__hashM = HashManager()
    
     def readBoard(self):
         '''
@@ -24,14 +24,14 @@ class FileModule:
             stored_hash = file.readline().strip()
             for line in file:
                 numbers = line.strip().split()
-                if not all(self.validator.isPositiveInteger(num) for num in numbers):
+                if not all(self.__validator.isPositiveInteger(num) for num in numbers):
                     raise TypeError("Unexpected characters in place of tile numbers")
                 
                 row = [int(num) for num in line.split()]
                 board.append(row)
 
         board_str = str(board)
-        calculated_hash = str(self.hashM.murmurhash2(board_str.encode()) ) # Use the same hash algorithm
+        calculated_hash = str(self.__hashM.murmurhash2(board_str.encode()) ) # Use the same hash algorithm
 
         if stored_hash == calculated_hash:
             return board
@@ -46,7 +46,7 @@ class FileModule:
      
         with open(self.boardFname, 'w') as file:
             board_str = str(board)
-            hash_value = str(self.hashM.murmurhash2(board_str.encode()) ) # using a hash algorithm
+            hash_value = str(self.__hashM.murmurhash2(board_str.encode()) ) # using a hash algorithm
 
             file.write(hash_value + '\n')  # Writing the hash value
             for row in board:
@@ -64,9 +64,9 @@ class FileModule:
         with open(self.scoreFname, 'r') as file:
             stored_hash = file.readline().strip()
             score = (file.readline())
-        calculated_hash =  str(self.hashM.murmurhash2(score) )
+        calculated_hash =  str(self.__hashM.murmurhash2(score) )
         if calculated_hash == stored_hash and \
-            self.validator.isPositiveInteger(score):
+            self.__validator.isPositiveInteger(score):
             return int(score)
         else: return 100
 
@@ -76,7 +76,7 @@ class FileModule:
         also write its hash 
         '''
         with open(self.scoreFname, 'w') as file:
-            file.write(str (self.hashM.murmurhash2(str(score))) + '\n')
+            file.write(str (self.__hashM.murmurhash2(str(score))) + '\n')
             file.write(str(score))
     
     @property

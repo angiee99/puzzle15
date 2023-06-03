@@ -9,7 +9,7 @@ each value in dictionary
     def __init__(self, cache_size = 4000):
         self.__records = dict()
         self._cache_size = cache_size
-        self.hashM = HashManager()
+        self.__hashM = HashManager()
    
     @property
     def records(self):
@@ -20,7 +20,7 @@ each value in dictionary
     
     def isInList(self, state):
         ''' returns True if state is in list'''
-        key = self.hashM.murmurhash2(str(state))
+        key = self.__hashM.murmurhash2(str(state))
         return key in self.__records
         
     def insert(self, node, key=None):
@@ -28,14 +28,14 @@ each value in dictionary
             if key is not provided, calculates it
         '''
 
-        if not key:   key =  self.hashM.murmurhash2(str(node))
+        if not key:   key =  self.__hashM.murmurhash2(str(node))
         self.__records[key] = node.heuristic()
 
     def getHScore(self, node):
         ''' returns the stores hScore
             if node is not in list, adds it and returns 
         '''
-        key =  self.hashM.murmurhash2(str(node))
+        key =  self.__hashM.murmurhash2(str(node))
         if key not in self.__records:
             self.insert(node, key)  
         return self.__records[key]

@@ -2,6 +2,9 @@ from gameSettings import *
 buttonFont = pygame.font.SysFont('Segoe UI', 28)
 
 class Button(pygame.sprite.Sprite):
+    '''
+    represents a single button that is clickable and changable
+    '''
     def __init__(self, text, pos, text_color=BLACK, bg_color=None, feedback="", hover_color=GREY):
         super().__init__()
         self.__pos = pos
@@ -11,17 +14,13 @@ class Button(pygame.sprite.Sprite):
         self.__bg_color = bg_color
         self.__feedback = feedback
         self.__hover_color = hover_color
-        self._clickedState = None
-        self.coordinates = self._countCoord()
+        self.__clickedState = None
     
-    def _countCoord(self):
+    def _countCoord(self, text_size):
         '''
         counts the width and height of the button 
         differs if a button has a bg_color or not
         '''
-        self.text_surf = buttonFont.render(self._text, True, self.__text_color).convert_alpha()
-        text_size = self.text_surf.get_size()
-
         button_width  = text_size[0]
         button_height = text_size[1]
         if self.__bg_color is not None:
@@ -33,7 +32,10 @@ class Button(pygame.sprite.Sprite):
         '''
         creates a surface and displays it
         '''
-        self.__image = pygame.Surface(self.coordinates)
+        self.text_surf = buttonFont.render(self._text, True, self.__text_color).convert_alpha()
+        self._coordinates = self._countCoord( self.text_surf.get_size())
+
+        self.__image = pygame.Surface(self._coordinates)
         self.__rect = self.__image.get_rect()
           
         if self.__bg_color is None:
@@ -51,9 +53,9 @@ class Button(pygame.sprite.Sprite):
         ''' 
         changes the way button looks and changes the clickedState flag
         '''
-        if self._clickedState == 1: self._clickedState += 1
-        elif self._clickedState == 2: return
-        else: self._clickedState = 1
+        if self.__clickedState == 1: self.__clickedState += 1
+        elif self.__clickedState == 2: return
+        else: self.__clickedState = 1
         self.__image.fill(YELLOW)
    
     #змінить прапорець wasClicked на реді 
@@ -63,11 +65,11 @@ class Button(pygame.sprite.Sprite):
         if a button should change when the function terminates, 
         this methos is responsoble for that
         '''
-        if self.__feedback == "" or self._clickedState == False: 
-            self._clickedState == False
+        if self.__feedback == "" or self.__clickedState == False: 
+            self.__clickedState == False
         else:  
             self._text = self.__feedback
-            self._clickedState = 2
+            self.__clickedState = 2
             self.__image.blit(self.text_surf, self.text_pos)
    
     def backToInit(self): 
@@ -75,14 +77,14 @@ class Button(pygame.sprite.Sprite):
         changes the clickedState flag and turns the text back to initial
         '''
         self._text = self._initText 
-        self._clickedState = False
+        self.__clickedState = False
 
     def hovered(self):
         '''
         changes the color of the button if the mouse hovers
         '''
         hover = self.__rect.collidepoint(pygame.mouse.get_pos())
-        if hover and not self._clickedState:
+        if hover and not self.__clickedState:
             self.__image.fill(self.__hover_color)
             self.__image.blit(self.text_surf, self.text_pos)
     
@@ -112,7 +114,7 @@ class Button(pygame.sprite.Sprite):
         return self.__hover_color
     @property
     def clickedState(self):
-        return self._clickedState
+        return self.__clickedState
     @property
     def image(self):
         return self.__image

@@ -1,6 +1,11 @@
 from puzzleStar import *
 from validator import NumberValidator
 class FileModule:
+    '''
+    reads and writes a game board with some validation\n
+    reads and writes best score in file,
+    works with text files
+    '''
     def __init__(self, boardFname="files/board.txt", scoreFname= "files/score.txt"):
         self._boardFname = boardFname
         self._scoreFname = scoreFname
@@ -8,7 +13,7 @@ class FileModule:
    
     def readBoard(self):
         '''
-        read board from file
+        read board from file\n
         validate if it is a board that was saved 
         if not then raises ValueError or TypeError
         '''
@@ -32,10 +37,11 @@ class FileModule:
             raise ValueError("The file was changed from the outside")
     
     def writeBoard(self, board):
-        # writing a hash of the board 
-                    # this is a mark that the board was written from the code
-                    # as we want to ensure no one changes the file from outside
-                    # as it may cause problems 
+        '''
+        write board to the file\n 
+        also write a hash of the board as a mark that the board was written from the code
+        '''
+     
         with open(self.boardFname, 'w') as file:
             board_str = str(board)
             hash_value = str(self.murmurhash2(board_str.encode()) ) # using a hash algorithm
@@ -48,15 +54,25 @@ class FileModule:
 
 
     def readScore(self):
+        '''
+        read score from file\n
+        compare its hash with hash in the file, if not same - return 100 as the best score,
+        100 is a bad score)
+        '''
         with open(self.scoreFname, 'r') as file:
             stored_hash = file.readline().strip()
             score = (file.readline())
         calculated_hash =  str(self.murmurhash2(score) )
-        if calculated_hash == stored_hash:
+        if calculated_hash == stored_hash and \
+            self.validator.isPositiveInteger(score):
             return int(score)
         else: return 100
 
     def writeScore(self, score):
+        '''
+        write score to the file\n
+        also write its hash 
+        '''
         with open(self.scoreFname, 'w') as file:
             file.write(str (self.murmurhash2(str(score))) + '\n')
             file.write(str(score))
@@ -69,6 +85,10 @@ class FileModule:
         return self._boardFname
     
     def murmurhash2(self, key, seed=0):
+        '''
+        hash that is based on multiplication and rotation\n
+        processes key in 4-byte chunks
+        '''
         # multimplication, rotation, XOR
         # Constants for the MurmurHash2 algorithm
         M = 0x5bd1e995

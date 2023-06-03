@@ -5,12 +5,19 @@ from button import Button
 
 
 class ButtonList: #mb button Container
+    '''
+    Container for buttons that handles them all together\n
+    creates, shows and updates the buttons
+    '''
     def __init__(self, game):
-        self._game = game 
-        self._ActiveBt = self.createActiveBt()  
-        self._NonActiveBt = self.createNonActiveBt()
+        self.__game = game 
+        self.__ActiveBt = self.createActiveBt()  
+        self.__NonActiveBt = self.createNonActiveBt()
     
     def createActiveBt(self):
+        '''
+        initialize buttons displayed when game is active
+        '''
         self.btReshuffle = Button("Reshuffle", (505, 130), NLIGHT, NLIGHTBLUE)
         self.btAutosolve = Button("Autosolve", (505, 230), NBLUE, NLIGHT, "Click&Move", hover_color=NLIGHTBLUE)
         self.btSave  = Button("Save game", (505, 330), NLIGHT, NLIGHTBLUE)
@@ -25,6 +32,9 @@ class ButtonList: #mb button Container
         return btSprites
     
     def createNonActiveBt(self):
+        '''
+        initialize buttons displayed when game is non-active
+        '''
         self.btResume = Button("Resume last game", (SCREEN_WIDTH//2- 125, SCREEN_HEIGHT//2 + 150),
                               NLIGHT, NLIGHTBLUE, hover_color=GREY)
         btWinSprites = pygame.sprite.Group()
@@ -33,10 +43,18 @@ class ButtonList: #mb button Container
         return btWinSprites
     
     def reset(self):
+        '''
+        turns all buttons to initial state
+        '''
         for button in self.ActiveBt:
+            button.backToInit()
+        for button in self.NonActiveBt:
             button.backToInit()
     
     def update(self, pos=None):
+        '''
+        checks buttons and updates them
+        '''
         if pos is None:
             return
         if self.game.active: 
@@ -46,6 +64,10 @@ class ButtonList: #mb button Container
         self.draw()
     
     def draw(self): #after update
+        '''
+        draws buttons depending on game state
+        invokes hovered method for each button
+        '''
         if self.game.active:
             for button in self.ActiveBt:
                 button.showButton()
@@ -58,6 +80,9 @@ class ButtonList: #mb button Container
             self.NonActiveBt.draw(self.game.screen)
 
     def checkNaButtons(self, pos=None):
+        '''
+        checks if non-active buttons were clicked and invokes their method 
+        '''
         for button in self.NonActiveBt:
             if  button.rect.collidepoint(pos):
                 button.clicked()
@@ -71,6 +96,9 @@ class ButtonList: #mb button Container
     
 
     def checkAButtons(self, pos=None): 
+        '''
+        checks if active buttons were clicked and invokes their method 
+        '''
         for button in self.ActiveBt:
             if  button.rect.collidepoint(pos):
                 button.clicked()
@@ -101,11 +129,11 @@ class ButtonList: #mb button Container
    
     @property 
     def game(self):
-        return self._game
+        return self.__game
     @property 
     def ActiveBt(self):
-        return self._ActiveBt
+        return self.__ActiveBt
     @property 
     def NonActiveBt(self):
-        return self._NonActiveBt
+        return self.__NonActiveBt
     

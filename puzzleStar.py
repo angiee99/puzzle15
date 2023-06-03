@@ -6,12 +6,18 @@ INF = 100000
 NANO_TO_SEC = 1000000000
 
 class PuzzleStar(Puzzle):
+    '''
+    N-Puzzle that inherits from Puzzle and has basic methods\n
+    Implements autosolve using IDA*
+    '''
     def __init__(self, other=None, size=4):
         Puzzle.__init__(self, False, other, size)
     def IDAstar(self): 
         '''
-        if puzzle is alreade won - return void list, 
-        else returns list of directions to follow 
+        Searches for the acceptably short path to solution\n
+        Returns: 
+            void list, if puzzle is alreade won\n 
+            else returns list of directions to follow 
         '''
         if self.ifWon(): 
             return []
@@ -43,7 +49,17 @@ class PuzzleStar(Puzzle):
             bound = res    
     
     def search(self, path, gScore, bound, dirs): 
-        node = path[-1] #so path works like a stack 
+        '''
+        Recursive depth-first search with a set bound\n
+        Args:
+            path: A list representing the current path of nodes.
+            gScore: The current path cost or score.
+            bound: The current bound for the search.
+            dirs: A list of directions taken in the search.
+        Returns:
+            The minimum F-score if a solution is not found, otherwise True if found
+        '''
+        node = path[-1] #path works like a stack 
 
         F = gScore + self.puzzleList.getHScore(node)
         if F > bound: 
@@ -54,9 +70,7 @@ class PuzzleStar(Puzzle):
         min = INF
 
         for dir in node.DIRECTIONS: 
-            #
-            if dirs and (-dir[0], -dir[1]) == dirs[-1]: # (alloqs not to check the input state)
-                                                        #????? not sure how
+            if dirs and (-dir[0], -dir[1]) == dirs[-1]: # allows not to check the input state                                        
                 continue
 
             tryDir, tryPuzzle = node.tryMoveWithCopy(dir) # simulateMove
@@ -75,13 +89,11 @@ class PuzzleStar(Puzzle):
                 min = result 
 
             path.pop()
-                #rewrite through method
-            # self.puzzleList.records.pop(hash(tryPuzzle))
-            # self.puzzleList.pop(tryPuzzle)
             dirs.pop()
         return min
     
     def tryMoveWithCopy(self, dir):
+        ''' tries to move in direction dir, if possible - return the result'''
         simPuzzle = PuzzleStar(other=self)  # Create a copy of the current puzzle
 
         if simPuzzle.move(dir):
@@ -90,6 +102,9 @@ class PuzzleStar(Puzzle):
             return False, None
       
     def heuristic(self):
+        ''' 
+        counts the sum of all manhattan distances
+        '''
         h = 0  
         for i in range (self._size): 
             for j in range (self._size):

@@ -91,7 +91,7 @@ class Game:
             self.__winTime = self._getCurrentTime()
             if(self.__winTime < self.__bestScore):
                 self.__bestScore = self.__winTime 
-                self.__fileHandler.writeScore(self.__bestScore) 
+                # self.__fileHandler.writeScore(self.__bestScore) 
             self.__active = False
     
     def drawWinScreen(self):
@@ -213,9 +213,9 @@ class Game:
 
         self.screen.blit(score_surf, score_rect)
 
-    def moveTiles(self, pos=None, dir=None):
+    def moveTiles(self, pos: tuple =None, dir: tuple =None):
         ''' 
-        moves the tile either by getting direction to meve\n
+        moves the tile either by getting direction to move\n
         or by getting the mouse clicked position and counting the direction
         '''
         if pos:

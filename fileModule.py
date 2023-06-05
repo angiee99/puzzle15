@@ -38,7 +38,7 @@ class FileModule:
         else: #!! do something -> dont let it terminate
             raise ValueError("The file was changed from the outside")
     
-    def writeBoard(self, board):
+    def writeBoard(self, board: list):
         '''
         write board to the file\n 
         also write a hash of the board as a mark that the board was written from the code
@@ -70,7 +70,7 @@ class FileModule:
             return int(score)
         else: return 100
 
-    def writeScore(self, score):
+    def writeScore(self, score: int):
         '''
         write score to the file\n
         also write its hash 

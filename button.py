@@ -5,7 +5,7 @@ class Button(pygame.sprite.Sprite):
     '''
     represents a single button that is clickable and changable
     '''
-    def __init__(self, text, pos, text_color=BLACK, bg_color=None, feedback="", hover_color=GREY):
+    def __init__(self, text: str, pos: tuple, text_color=BLACK, bg_color=None, feedback="", hover_color=GREY):
         super().__init__()
         self.__pos = pos
         self._text = text
@@ -16,7 +16,7 @@ class Button(pygame.sprite.Sprite):
         self.__hover_color = hover_color
         self.__clickedState = None
     
-    def _countCoord(self, text_size):
+    def _countCoord(self, text_size: tuple):
         '''
         counts the width and height of the button 
         differs if a button has a bg_color or not
@@ -48,7 +48,7 @@ class Button(pygame.sprite.Sprite):
         self.__image.blit(self.text_surf, self.text_pos)
         self.__rect.topleft = self.__pos 
 
-    #прапорець wasClicked  = ін проусес
+    #прапорець wasClicked
     def clicked(self):
         ''' 
         changes the way button looks and changes the clickedState flag
@@ -58,7 +58,7 @@ class Button(pygame.sprite.Sprite):
         else: self.__clickedState = 1
         self.__image.fill(YELLOW)
    
-    #змінить прапорець wasClicked на реді 
+    
     def missionCompleted(self):
         ''' 
         changes the way button looks and changes the clickedState flag\n

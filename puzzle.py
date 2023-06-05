@@ -65,7 +65,7 @@ class Puzzle: #could be Board
     def shuffleMoves(self):
         ''' shuffles the puzzle using the directions '''
         self.get_solved_state()
-        shufflesCount = 152
+        shufflesCount = 132
         for _ in range(shufflesCount):
             dir = choice(self.DIRECTIONS)
             self.move(dir)
@@ -112,6 +112,11 @@ class Puzzle: #could be Board
         return inv_count
 
     def isSolvable(self):
+        '''
+        checks if puzzle is solvable by count inversions, getting the blankPos
+        if the sum of inv_count and blankPos row is even -> then solvable
+        if not, swap two elements that do not include blank tile
+        '''
         # Count inversions in given puzzle
         invCount = self.getInvCount()
     
@@ -137,7 +142,7 @@ class Puzzle: #could be Board
                 j = 3
             self._state[0][i], self._state[0][j] =self._state[0][j], self._state[0][i]
     
-    def move(self, dir): 
+    def move(self, dir: tuple): 
         ''' moves the tiles only in correct direction '''
         if dir not in self.DIRECTIONS:
             return False

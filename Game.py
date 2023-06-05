@@ -91,7 +91,7 @@ class Game:
             self.__winTime = self._getCurrentTime()
             if(self.__winTime < self.__bestScore):
                 self.__bestScore = self.__winTime 
-                # self.__fileHandler.writeScore(self.__bestScore) 
+                self.__fileHandler.writeScore(self.__bestScore) 
             self.__active = False
     
     def drawWinScreen(self):
@@ -117,7 +117,7 @@ class Game:
         '''
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.__fileHandler.writeBoard(self.__board.state) # automatically saving board when exiting
+                # self.__fileHandler.writeBoard(self.__board.state) # automatically saving board when exiting
                 pygame.quit()
                 quit(0)
             elif event.type == pygame.KEYDOWN:

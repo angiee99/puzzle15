@@ -128,7 +128,6 @@ class Game:
                     self.__board.get_solved_state()
                 elif event.key == pygame.K_a: 
                     self.dirs = self.__board.IDAstar()
-                    print(self.dirs)
                     self._resetScore()
                 elif event.key == pygame.K_m:
                     if self.dirs:

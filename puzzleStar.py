@@ -27,8 +27,7 @@ class PuzzleStar(Puzzle):
         t1 =  perf_counter_ns()
         ''' bound is like the conut of levels we're looking at, but more flexible'''
         bound = self.puzzleList.getHScore(self) # hScore could be the method of PuzzleList class
-        # bound = self.heuristic()
-        print(bound)
+        # print(bound)
         path = [self]
         dirs = []
         while True: 
@@ -40,7 +39,6 @@ class PuzzleStar(Puzzle):
                 tDelta = (perf_counter_ns()-t1)/NANO_TO_SEC
                 print("Took {} seconds to find a solution of {} moves".format(tDelta, len(dirs)))  
                 self.puzzleList.records.clear()
-                # self.puzzleList.records.
                 sleep(0.5)
                 return dirs
             
@@ -63,7 +61,6 @@ class PuzzleStar(Puzzle):
         node = path[-1] #path works like a stack 
 
         F = gScore + self.puzzleList.getHScore(node)
-        # F = gScore + node.heuristic()
         if F > bound: 
             return F
         if node.ifWon(): 
@@ -81,7 +78,6 @@ class PuzzleStar(Puzzle):
                 continue
 
             path.append(tryPuzzle)
-            # self.puzzleList.insert(tryPuzzle)
             dirs.append(dir)
 
             result  = self.search(path, gScore+1, bound, dirs)

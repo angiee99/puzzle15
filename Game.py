@@ -133,7 +133,8 @@ class Game:
                 elif event.key == pygame.K_m:
                     if self.dirs:
                         d = self.dirs.pop(0)
-                        self.moveTiles(dir=d) 
+                        self.moveTiles(dir=d)                     
+                self.__buttons.synchronizeKeys(event.key) # synchronize the buttons to pressed keys
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()

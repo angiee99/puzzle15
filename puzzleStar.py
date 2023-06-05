@@ -10,7 +10,7 @@ class PuzzleStar(Puzzle):
     N-Puzzle that inherits from Puzzle and has basic methods\n
     Implements autosolve using IDA*
     '''
-    def __init__(self, other=None, size=4):
+    def __init__(self, other:Puzzle =None, size: int=4):
         Puzzle.__init__(self, False, other, size)
     def IDAstar(self): 
         '''
@@ -27,9 +27,9 @@ class PuzzleStar(Puzzle):
         t1 =  perf_counter_ns()
         ''' bound is like the conut of levels we're looking at, but more flexible'''
         bound = self.puzzleList.getHScore(self) # hScore could be the method of PuzzleList class
+        # bound = self.heuristic()
         print(bound)
         path = [self]
-        self.puzzleList.insert(self)
         dirs = []
         while True: 
             ''' res - minimum found for now
@@ -40,6 +40,7 @@ class PuzzleStar(Puzzle):
                 tDelta = (perf_counter_ns()-t1)/NANO_TO_SEC
                 print("Took {} seconds to find a solution of {} moves".format(tDelta, len(dirs)))  
                 self.puzzleList.records.clear()
+                # self.puzzleList.records.
                 sleep(0.5)
                 return dirs
             
@@ -48,7 +49,7 @@ class PuzzleStar(Puzzle):
             
             bound = res    
     
-    def search(self, path, gScore, bound, dirs): 
+    def search(self, path: list, gScore: int, bound:int, dirs:list): 
         '''
         Recursive depth-first search with a set bound\n
         Args:
@@ -62,6 +63,7 @@ class PuzzleStar(Puzzle):
         node = path[-1] #path works like a stack 
 
         F = gScore + self.puzzleList.getHScore(node)
+        # F = gScore + node.heuristic()
         if F > bound: 
             return F
         if node.ifWon(): 
@@ -92,7 +94,7 @@ class PuzzleStar(Puzzle):
             dirs.pop()
         return min
     
-    def tryMoveWithCopy(self, dir):
+    def tryMoveWithCopy(self, dir: tuple):
         ''' tries to move in direction dir, if possible - return the result'''
         simPuzzle = PuzzleStar(other=self)  # Create a copy of the current puzzle
 
@@ -101,7 +103,7 @@ class PuzzleStar(Puzzle):
         else:
             return False, None
       
-    def heuristic(self):
+    def manhattanDistance(self):
         ''' 
         counts the sum of all manhattan distances
         '''
@@ -113,3 +115,44 @@ class PuzzleStar(Puzzle):
                     y1 = (self._state[i][j] - 1) % self._size
                     h += abs(x1 - i) + abs(y1 - j)
         return h
+    
+    def heuristic(self):
+        ''' 
+        Counts the sum of all manhattan distances with linear conflicts\n
+        h = manhattan distance + 2 * number of linear conflicts
+        '''
+        h = 0
+        h += self.manhattanDistance()
+        h += 2*self.linearConflicts()
+        return h
+
+    def linearConflicts(self):
+        '''
+        Counts the number of linear conflicts in rows and columns
+        '''
+        conflicts = 0
+        for i in range(self._size):
+            row = self._state[i]
+            col = [self._state[j][i] for j in range(self._size)]
+            conflicts += self.countConflicts(row)
+            conflicts += self.countConflicts(col)
+        return conflicts
+
+    def countConflicts(self, tiles):
+        '''
+        Counts the number of conflicts in a given list of tiles
+        '''
+        conflicts = 0
+        size = len(tiles)
+        for i in range(size):
+            for j in range(i + 1, size):
+                if tiles[i] != 0 and tiles[j] != 0: # not considering the void tile
+                    if (tiles[i] - 1) // size == (tiles[j] - 1) // size:
+                        # if tiles in the same row and have conflict
+                        if tiles[i] > tiles[j]:
+                            conflicts += 1
+                    elif (tiles[i] - 1) % size == (tiles[j] - 1) % size:
+                        # if tiles in the same column and have conflict
+                        if tiles[i] > tiles[j]:
+                            conflicts += 1
+        return conflicts

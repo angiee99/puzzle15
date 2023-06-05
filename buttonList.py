@@ -4,7 +4,7 @@ from gameSettings import *
 from button import Button
 
 
-class ButtonList: #mb button Container
+class ButtonList: 
     '''
     Container for buttons that handles them all together\n
     creates, shows and updates the buttons
@@ -98,6 +98,7 @@ class ButtonList: #mb button Container
     def checkAButtons(self, pos=None): 
         '''
         checks if active buttons were clicked and invokes their method 
+        Arg: pos - position of mouse clicked (if not None)
         '''
         for button in self.ActiveBt:
             if  button.rect.collidepoint(pos):
@@ -108,11 +109,11 @@ class ButtonList: #mb button Container
                     self.game._resetScore()
                 
                 elif button == self.btAutosolve and  button.clickedState == 1: 
-                    self.dirs = self.game.board.IDAstar()
+                    self.game.dirs = self.game.board.IDAstar()
                     self.game._resetScore()
         
-                elif button == self.btAutosolve and self.dirs:     
-                    d = self.dirs.pop(0)
+                elif button == self.btAutosolve and self.game.dirs:     
+                    d = self.game.dirs.pop(0)
                     self.game.moveTiles(dir = d)
                    
                 elif button == self.btSave:
@@ -127,6 +128,14 @@ class ButtonList: #mb button Container
             if button.feedback == "": 
                 button.backToInit()
    
+    def synchronizeKeys(self, key):
+        if key == pygame.K_a:
+            self.btAutosolve.clicked()
+            self.btAutosolve.missionCompleted()
+        elif key == pygame.K_r:
+            self.btAutosolve.backToInit()
+
+
     @property 
     def game(self):
         return self.__game
